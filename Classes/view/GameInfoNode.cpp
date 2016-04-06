@@ -17,7 +17,7 @@ bool GameInfoNode::init()
 	{
 		return false;
 	}
-	_countdownLb = Label::createWithSystemFont("00::00::00", "Î¢ÈíÑÅºÚ", 22);
+	_countdownLb = Label::createWithSystemFont("00:00:00", "Î¢ÈíÑÅºÚ", 22);
 	_countdownLb->setAnchorPoint(Vec2(0, 0));
 	_countdownLb->setPosition(Vec2(60, 580.0));
 	this->addChild(_countdownLb);
@@ -25,7 +25,8 @@ bool GameInfoNode::init()
 	EventManager::getIns()->addEventListener(EventManager::EVENT_NEXT_COUNTDOWN, "", [this](EventCustom* event) {
 		auto userData = static_cast<int*>(event->getUserData());
 		const int type = Config::player;
-		if (userData == type)
+		const int user = *userData;//½«int*µÄÖµ¸³Öµ¸øconst int user
+		if (user == type)
 		{
 			_countdown = 11;
 			this->showCountdown(0.0);
@@ -46,7 +47,7 @@ void GameInfoNode::showCountdown(float td)
 	{
 		this->stopCountdown();
 	}
-	char str[100];
+	char str[9];
 	if (_countdown < 10)
 	{
 		sprintf(str, "00:00:0%d", _countdown);

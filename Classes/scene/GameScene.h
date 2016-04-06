@@ -10,6 +10,7 @@ public:
 
 	static Scene* createScene();
 	virtual bool init();
+	void showMap(float dt);
 	CREATE_FUNC(GameScene);
 private:
 	

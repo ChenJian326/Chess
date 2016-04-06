@@ -88,4 +88,5 @@ void GameMap::initChess()
 	}
 	//默认为玩家先下
 	GameManager::GetIns()->setCurrentOpponent(Config::player);
+	CCLOG("run game manager");
 }
