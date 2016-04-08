@@ -128,6 +128,7 @@ void GameManager::moveChessman(int opponentType)
 	ChessmanNode* chessman1 = dynamic_cast<ChessmanNode*>(_moveChessmens.at(0));
 	ChessmanNode* chessman2 = dynamic_cast<ChessmanNode*>(_moveChessmens.at(1));
 	int type1 = chessman2->getChessmanType(), type2 = chessman2->getOpponentType(), index = chessman2->getIndex();
+	CCLOG("one type1 = %d type2 = %d index = %d", type1, type2, index);
 	if (chessman2->getOpponentType() == Config::pc)
 	{
 		int i = 0;
@@ -135,15 +136,16 @@ void GameManager::moveChessman(int opponentType)
 		{
 			if (dynamic_cast<ChessmanNode*>(var)->getIndex() == index) {
 				_pcChessmans.erase(_pcChessmans.begin() + i);
-				i++;
+				break;
 			}
+			i++;
 		}
 	}
-
+	CCLOG("two type1 = %d type2 = %d index = %d", type1, type2, index);
 	chessman2->clearChessman();
 	chessman2->setChessType(chessman1->getChessmanType(), chessman1->getOpponentType(), chessman1->getIndex());
 	chessman1->setChessType(type1, type2, index);
-	
+	CCLOG("san type1 = %d type2 = %d index = %d", type1, type2, index);
 	//修改下一个下棋的人
 	if (opponentType == Config::pc)
 	{

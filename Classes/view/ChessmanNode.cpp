@@ -1,5 +1,5 @@
 #include "ChessmanNode.h"
-
+#include "tips\TipsManager.h"
 
 ChessmanNode::ChessmanNode()
 	:_opponentType(0),
@@ -92,7 +92,12 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			_gameManager->setCurrentMoveChessman(_chessmanType);
 			_gameManager->pushMoveChessmens(this);
 		}
-		else if (_chessmanType != Config::nullChessman && _gameManager->getCurrentSelectChessman() == Config::nullChessman)
+		else if (_chessmanType != Config::nullChessman && _chessmanType == _gameManager->getCurrentMoveChessman())
+		{
+			_gameManager->setCurrentMoveChessman(Config::nullChessman);
+			TipsManager::showTips("取消了您本次操作，请重新操作");
+		}
+		else if (_gameManager->getCurrentSelectChessman() == Config::nullChessman)
 		{
 			_gameManager->setCurrentSelectChessman(_chessmanType);
 			bool isEat = _gameManager->isEatOrMove(_opponentType);

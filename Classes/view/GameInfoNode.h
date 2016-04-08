@@ -12,6 +12,7 @@ public:
 	CREATE_FUNC(GameInfoNode);
 private:
 	bool virtual init();
+	bool _isShowTips;
 	int _countdown;
 	Label* _countdownLb;
 	Label* _pcInfo;

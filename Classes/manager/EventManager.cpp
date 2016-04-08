@@ -26,7 +26,6 @@ void EventManager::dispatchEvent(std::string name, void* data)
 	EventCustom event(name);
 	event.setUserData(data);
 	_eventDispatcher->dispatchEvent(&event);
-	CCLOG("dispatch Event");
 }
 //
 void EventManager::addEventListener(std::string name, std::string eventName,std::function<void(EventCustom*)> CallBackFunc, Node * node)

@@ -2,6 +2,8 @@
 #include "manager\EventManager.h"
 #include "config\Config.h"
 #include "config\VisibleRect.h"
+#include "tips\TipsManager.h"
+
 GameInfoNode::GameInfoNode()
 	:_countdown(0)
 {
@@ -46,6 +48,7 @@ bool GameInfoNode::init()
 		if (user == type)
 		{
 			_countdown = 11;
+			_isShowTips = true;
 			this->showCountdown(0.0);
 			this->schedule(CC_SCHEDULE_SELECTOR(GameInfoNode::showCountdown), 1);
 			_currentInfo->setString(Config::GBKToUTF8("当前下棋：玩家"));
@@ -53,6 +56,7 @@ bool GameInfoNode::init()
 		else
 		{
 			_countdown = 1;
+			_isShowTips = false;
 			this->showCountdown(0.0);
 			_currentInfo->setString(Config::GBKToUTF8("当前下棋：PC"));
 		}
@@ -65,6 +69,9 @@ void GameInfoNode::showCountdown(float td)
 	if (_countdown <= 0)
 	{
 		this->stopCountdown();
+		if(_isShowTips){
+			TipsManager::showTips("喂！快点下棋啊，怎么想了那么久啊");
+		}
 	}
 	char str[9];
 	if (_countdown < 10)
