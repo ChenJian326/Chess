@@ -27,7 +27,8 @@ public:
 		row = 4,
 		column = 8,
 		w = column * CHESS_SIZE::width,
-		h = row * CHESS_SIZE::height
+		h = row * CHESS_SIZE::height,
+		len = row * column
 	};
 
 	//象棋类型
@@ -41,6 +42,18 @@ public:
 		car,//车
 		cannon,//炮
 		soldiers,//兵
+	};
+	//象棋类型
+	enum CONFIRM_TYPE
+	{
+		zero,
+		one,
+		two,
+		three,
+		four,
+		five,
+		six,
+		seven,
 	};
 	static const char* GBKToUTF8(const char *strChar);
 	static const char* GetChessmanName(int value, int opponetType);

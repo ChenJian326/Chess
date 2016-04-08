@@ -2,6 +2,8 @@
 #include <new>
 #include "config\Config.h"
 #include "EventManager.h"
+#include "view\ChessmanNode.h"
+#include "ai\PcAi.h"
 
 static GameManager* _manager = nullptr;
 
@@ -30,6 +32,20 @@ void GameManager::setCurrentOpponent(int value)
 	_currentOpponent = value;
 	//给玩家一个倒计时
 	EventManager::getIns()->dispatchEvent(EventManager::EVENT_NEXT_COUNTDOWN, &_currentOpponent);
+	if (_currentOpponent == Config::pc)
+	{
+		auto index = PcAi::startAi(_currentOpponent);
+		if (PcAi::getNextIndex() == Config::nullChessman) {
+			dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->MoveOrSelect(true);
+		}
+		else
+		{
+			dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->MoveOrSelect(true);
+			dynamic_cast<ChessmanNode*>(_pcChessmans.at(PcAi::getNextIndex()))->MoveOrSelect(true);
+		}
+	}
+	_currentMoveChessman = Config::nullChessman;
+	_currentSelectChessman = Config::nullChessman;
 }
 
 void GameManager::setCurrentSelectChessman(int chessmanType)
@@ -50,7 +66,7 @@ void GameManager::startTime()
 bool GameManager::isEatOrMove(int opponentType)
 {
 	bool isEatOrMove = false;
-	if (_currentSelectChessman == -1)
+	if (_currentSelectChessman == Config::nullChessman)
 	{
 		isEatOrMove = true;
 	}
@@ -75,13 +91,59 @@ bool GameManager::isEatOrMove(int opponentType)
 	return isEatOrMove;
 }
 
+void GameManager::pushChessman(Node * node)
+{
+	auto chessman = dynamic_cast<ChessmanNode*>(node);
+	if (chessman->getOpponentType() == Config::pc) {
+		_pcChessmans.push_back(chessman);
+	}
+	else
+	{
+		_playerChessmans.push_back(chessman);
+	}
+	_allChessmans.push_back(node);
+}
+
+
+
+std::vector<Node*> GameManager::getChessmans(int opponentType)
+{
+	if (opponentType == Config::pc) {
+		return _pcChessmans;
+	}
+	else
+	{
+		return _playerChessmans;
+	}
+}
+
+void GameManager::pushMoveChessmens(Node * node)
+{
+	_moveChessmens.push_back(node);
+}
+
 void GameManager::moveChessman(int opponentType)
 {
 	//在这里写交换两个棋子的位置
+	ChessmanNode* chessman1 = dynamic_cast<ChessmanNode*>(_moveChessmens.at(0));
+	ChessmanNode* chessman2 = dynamic_cast<ChessmanNode*>(_moveChessmens.at(1));
+	int type1 = chessman2->getChessmanType(), type2 = chessman2->getOpponentType(), index = chessman2->getIndex();
+	if (chessman2->getOpponentType() == Config::pc)
+	{
+		int i = 0;
+		for each (auto var in _pcChessmans)
+		{
+			if (dynamic_cast<ChessmanNode*>(var)->getIndex() == index) {
+				_pcChessmans.erase(_pcChessmans.begin() + i);
+				i++;
+			}
+		}
+	}
 
-
-
-
+	chessman2->clearChessman();
+	chessman2->setChessType(chessman1->getChessmanType(), chessman1->getOpponentType(), chessman1->getIndex());
+	chessman1->setChessType(type1, type2, index);
+	
 	//修改下一个下棋的人
 	if (opponentType == Config::pc)
 	{
@@ -91,6 +153,8 @@ void GameManager::moveChessman(int opponentType)
 	{
 		setCurrentOpponent(Config::pc);
 	}
+	_moveChessmens.erase(_moveChessmens.begin());
+	_moveChessmens.erase(_moveChessmens.begin());
 }
 
 

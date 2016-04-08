@@ -14,6 +14,9 @@ private:
 	bool virtual init();
 	int _countdown;
 	Label* _countdownLb;
+	Label* _pcInfo;
+	Label* _playerInfo;
+	Label* _currentInfo;
 };
 
 #endif

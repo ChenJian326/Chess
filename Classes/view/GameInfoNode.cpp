@@ -17,10 +17,27 @@ bool GameInfoNode::init()
 	{
 		return false;
 	}
+	auto visiSize = Director::getInstance()->getVisibleSize();
 	_countdownLb = Label::createWithSystemFont("00:00:00", "Î¢ÈíÑÅºÚ", 22);
 	_countdownLb->setAnchorPoint(Vec2(0, 0));
-	_countdownLb->setPosition(Vec2(60, 580.0));
+	_countdownLb->setPosition(Vec2(60, visiSize.height - 30));
+
+	_pcInfo = Label::createWithSystemFont(Config::GBKToUTF8("PC£ººìÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 22);
+	_pcInfo->setAnchorPoint(Vec2(1, 0));
+	_pcInfo->setPosition(Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + 100));
+
+	_playerInfo = Label::createWithSystemFont(Config::GBKToUTF8("Íæ¼Ò£ººÚÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 22);
+	_playerInfo->setAnchorPoint(Vec2(0, 0));
+	_playerInfo->setPosition(Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + 100));
+
+	_currentInfo = Label::createWithSystemFont("", "Î¢ÈíÑÅºÚ", 22);
+	_currentInfo->setAnchorPoint(Vec2(0, 0));
+	_currentInfo->setPosition(Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + 100));
+
 	this->addChild(_countdownLb);
+	this->addChild(_pcInfo);
+	this->addChild(_playerInfo);
+	this->addChild(_currentInfo);
 
 	EventManager::getIns()->addEventListener(EventManager::EVENT_NEXT_COUNTDOWN, "", [this](EventCustom* event) {
 		auto userData = static_cast<int*>(event->getUserData());
@@ -31,11 +48,13 @@ bool GameInfoNode::init()
 			_countdown = 11;
 			this->showCountdown(0.0);
 			this->schedule(CC_SCHEDULE_SELECTOR(GameInfoNode::showCountdown), 1);
+			_currentInfo->setString(Config::GBKToUTF8("µ±Ç°ÏÂÆå£ºÍæ¼Ò"));
 		}
 		else
 		{
 			_countdown = 1;
 			this->showCountdown(0.0);
+			_currentInfo->setString(Config::GBKToUTF8("µ±Ç°ÏÂÆå£ºPC"));
 		}
 	}, this);
 	return true;

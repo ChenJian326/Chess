@@ -1,15 +1,14 @@
 #include "ChessmanNode.h"
-#include "config\Config.h"
-#include "manager\TouchManager.h"
-#include "manager\GameManager.h"
+
 
 ChessmanNode::ChessmanNode()
 	:_opponentType(0),
 	_chessmanType(0),
 	colorID(1),
 	labelID(2),
-	isOpen(false),
-	_countdown(0)
+	_isOpen(false),
+	_countdown(0),
+	_gameManager(GameManager::GetIns())
 {
 }
 
@@ -24,10 +23,12 @@ ChessmanNode * ChessmanNode::createChessman(const std::string &name)
 	return chessman;
 }
 
-void ChessmanNode::setChessType(int value1, int value2)
+void ChessmanNode::setChessType(int value1, int value2, int index)
 {
 	_opponentType = value1;
 	_chessmanType = value2;
+	if (index > 0)
+		_index = index - 1;
 	auto color = dynamic_cast<LayerColor*>(this->getChildByTag(colorID));
 	auto label = dynamic_cast<Label*>(this->getChildByTag(labelID));
 	if (_opponentType == Config::OPPONENT::pc)
@@ -43,19 +44,25 @@ void ChessmanNode::setChessType(int value1, int value2)
 	}
 	label->setString(Config::GetChessmanName(_chessmanType, _opponentType));
 	TouchManager::getIns()->addTouchNode(this, [=]() {
-		if (GameManager::GetIns()->getCurrentOpponent() == Config::player) {
+		if (_gameManager->getCurrentOpponent() == Config::player) {
 			this->MoveOrSelect(false);
 		}
 	});
-	CCLOG("_opponentType = %d _chessmanType = %d", _opponentType, _chessmanType);
+	label->setVisible(_isOpen);
+	color->setVisible(true);
 }
 
 //Æå×Ó±»³ÔÁË
 void ChessmanNode::clearChessman()
 {
-	this->removeChildByTag(colorID);
-	this->removeChildByTag(labelID);
+	this->getChildByTag(colorID)->setVisible(false);
+	this->getChildByTag(labelID)->setVisible(false);
 	_chessmanType = Config::nullChessman;
+}
+
+bool ChessmanNode::isEat()
+{
+	return _chessmanType == Config::nullChessman;
 }
 
 bool ChessmanNode::init()
@@ -78,41 +85,34 @@ bool ChessmanNode::init()
 
 void ChessmanNode::MoveOrSelect(bool isPc)
 {
-	CCLOG("touch end name = %s  %d", Config::GetChessmanName(_chessmanType, _opponentType), _chessmanType);
-	if (isOpen)
+	if (_isOpen)
 	{
-		if (_chessmanType != Config::nullChessman && GameManager::GetIns()->getCurrentMoveChessman() == Config::nullChessman)
+		if (_chessmanType != Config::nullChessman && _gameManager->getCurrentMoveChessman() == Config::nullChessman)
 		{
-			GameManager::GetIns()->setCurrentMoveChessman(_chessmanType);
+			_gameManager->setCurrentMoveChessman(_chessmanType);
+			_gameManager->pushMoveChessmens(this);
 		}
-		else if (_chessmanType != Config::nullChessman && GameManager::GetIns()->getCurrentSelectChessman() == Config::nullChessman)
+		else if (_chessmanType != Config::nullChessman && _gameManager->getCurrentSelectChessman() == Config::nullChessman)
 		{
-			GameManager::GetIns()->setCurrentSelectChessman(_chessmanType);
-			bool isEat = GameManager::GetIns()->isEatOrMove(_opponentType);
+			_gameManager->setCurrentSelectChessman(_chessmanType);
+			bool isEat = _gameManager->isEatOrMove(_opponentType);
 			if (isEat)
 			{
-				GameManager::GetIns()->moveChessman(_opponentType);
+				_gameManager->pushMoveChessmens(this);
+				_gameManager->moveChessman(_opponentType);
 			}
+			_gameManager->setCurrentOpponent(isPc ? Config::player : Config::pc);
 		}
 	}
 	else
 	{
 		this->getChildByTag(labelID)->setVisible(true);
+		_gameManager->setCurrentOpponent(isPc ? Config::player : Config::pc);
 	}
-	GameManager::GetIns()->setCurrentOpponent(isPc ? Config::player : Config::pc);
-	isOpen = true;
-	if (!isPc) {
-		/*_countdown = 10;
-		this->schedule(CC_SCHEDULE_SELECTOR(ChessmanNode::countdown), 1);*/
-	}
+	_isOpen = true;
 }
 
 void ChessmanNode::countdown(float dt)
 {
-	/*_countdown--;
-	if (_countdown <= 0)
-	{
-		this->unschedule(CC_SCHEDULE_SELECTOR(ChessmanNode::countdown));
-	}*/
-	CCLOG("_countdown = %d", _countdown);
+
 }

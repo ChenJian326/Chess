@@ -21,7 +21,6 @@ GameMap::GameMap()
 		Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player,
 		Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc
 	};
-	//opponets.erase()
 }
 
 GameMap::~GameMap()
@@ -64,6 +63,7 @@ bool GameMap::init()
 void GameMap::initChess()
 {
 	int i, j, index = 0,type1,type2;
+	auto manager = GameManager::GetIns();
 	int space = Config::CHESS_SIZE::width;
 	auto node = this->getChildByTag(nodeId);
 	std::vector<int>::iterator it1 ;
@@ -77,16 +77,17 @@ void GameMap::initChess()
 			auto chessman = ChessmanNode::createChessman(str);
 			type1 =random(0, (int)opponets.size() - 1);
 			type2 = random(0, (int)chessmans.size() - 1);
-			chessman->setChessType(opponets.at(type1), chessmans.at(type2));
+			chessman->setChessType(opponets.at(type1), chessmans.at(type2), index);
 			it1 = opponets.begin() + type1;
 			it2 = chessmans.begin() + type2;
 			opponets.erase(it1);
 			chessmans.erase(it2);
 			chessman->setPosition(Vec2(j * space, i * space));
 			node->addChild(chessman);
+			manager->pushChessman(chessman);
 		}
 	}
+	
 	//默认为玩家先下
-	GameManager::GetIns()->setCurrentOpponent(Config::player);
-	CCLOG("run game manager");
+	manager->setCurrentOpponent(Config::player);
 }
