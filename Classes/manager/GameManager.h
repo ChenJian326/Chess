@@ -20,6 +20,7 @@ public:
 	int getCurrentOpponent() { return _currentOpponent; };
 	int getCurrentSelectChessman() { return _currentSelectChessman; };
 	int getCurrentMoveChessman() { return _currentMoveChessman; };
+	int getSelectChessOpponent();
 
 	std::vector<Node*> getChessmans(int opponentType);
 	std::vector<Node*> getAllChessmans() { return _allChessmans; };

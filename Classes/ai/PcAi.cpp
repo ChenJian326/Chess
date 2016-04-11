@@ -5,17 +5,16 @@
 
 int PcAi::_nextIndex = 0;
 
-typedef std::map<int, int> PAIR;
+typedef std::map<int, std::vector<int>> PAIR;
 
 bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
-	auto itr1 = lhs.begin();
-	auto itr2 = rhs.begin();
-	return itr1->second > itr2->second;
+	auto itr1 = lhs.begin()->second.at(1);
+	auto itr2 = rhs.begin()->second.at(1);
+	return itr1 > itr2;
 }
 
 PcAi::PcAi()
 {
-
 }
 
 PcAi::~PcAi()
@@ -25,36 +24,31 @@ PcAi::~PcAi()
 int PcAi::startAi(int opponentType = Config::pc)
 {
 	std::vector<int> _indexs;
-	std::map<int, std::vector<int>> _chessInfoMap;
-	std::vector<std::map<int, int>> _chessSortVec;
-	std::map<int, std::vector<int>>::iterator itr;
-
+	std::map<int, std::vector<std::vector<int>>> _chessInfoMap;
+	std::vector<std::map<int, std::vector<int>>> _chessSortVec;
+	std::map<int, std::vector<std::vector<int>>>::iterator itr;
 	auto vec = GameManager::GetIns()->getChessmans(opponentType);
 	int leftIndex = 0, rightIndex = 0, topIndex = 0, bottomIndex = 0, index = 0;
 	_nextIndex = Config::nullChessman;
-	for (int var = 0; var < vec.size(); var++)
+
+	for (unsigned int var = 0; var < vec.size(); var++)
 	{
 		auto node = dynamic_cast<ChessmanNode*>(vec.at(var));
 		if (node->isOpen())
 		{
-			leftIndex = PcAi::leftAi(node->getIndex());
-			rightIndex = PcAi::rightAi(node->getIndex());
-			topIndex = PcAi::topAi(node->getIndex());
-			bottomIndex = PcAi::bottomAi(node->getIndex());
-			_chessInfoMap[var] = std::vector<int>{ leftIndex ,rightIndex,topIndex ,bottomIndex };
+			_chessInfoMap[var] = std::vector<std::vector<int>>{ PcAi::leftAi(node->getIndex()) ,PcAi::rightAi(node->getIndex()), PcAi::topAi(node->getIndex()) ,PcAi::bottomAi(node->getIndex()) };
 		}
 		else
 		{
 			_indexs.push_back(var);
 		}
 	}
-
 	for (itr = _chessInfoMap.begin(); itr != _chessInfoMap.end(); itr++)
 	{
-		std::sort(itr->second.begin(), itr->second.end(), [](int i1, int i2)->bool {
-			return i1 > i2;
+		std::sort(itr->second.begin(), itr->second.end(), [](std::vector<int> i1, std::vector<int> i2)->bool {
+			return i1.at(1) > i2.at(1);
 		});
-		std::map<int, int> map;
+		std::map<int, std::vector<int>> map;
 		map[itr->first] = itr->second.at(0);
 		_chessSortVec.push_back(map);
 	}
@@ -65,118 +59,58 @@ int PcAi::startAi(int opponentType = Config::pc)
 		index = _indexs.at(random(0, (int)_indexs.size() - 1));
 	}
 	else
-	{
-		index = _chessSortVec.at(0).begin()->first;
+	{	//如果没有可以行动的棋子
+		if (_chessSortVec.at(0).begin()->second.at(1) <= 0)
+		{
+			index = _indexs.at(random(0, (int)_indexs.size() - 1));
+		}
+		else
+		{
+			index = _chessSortVec.at(0).begin()->first;
+			_nextIndex = PcAi::getNextDirectionIndex(index, _chessSortVec.at(0).begin()->second.at(0),1);
+		}
 	}
 	CCLOG("index = %d ***** _nextIndex = %d", index, _nextIndex);
 	return index;
 }
 
-int PcAi::leftAi(int index)
+std::vector<int> PcAi::leftAi(int index)
 {
-	int type = Config::zero;
 	int k = Config::column - (ceil((index + 1) / (float)Config::column) * Config::column - index - 1);
-	auto vec = GameManager::GetIns()->getAllChessmans();
-	auto chessman = dynamic_cast<ChessmanNode*>(vec.at(index));
-	for (int var = 0; var < k; var++)
-	{
-		auto node = dynamic_cast<ChessmanNode*>(vec.at(index - (var + 1)));
-		if (!node->isOpen())
-		{
-			type = Config::zero;
-			break;
-		}
-		else
-		{
-			if (node->getOpponentType() == chessman->getOpponentType())
-			{
-				type = Config::zero;
-				break;
-			}
-			if (chessman->getOpponentType() != node->getOpponentType() && chessman->getChessmanType() <= node->getChessmanType())
-			{
-				type = Config::seven - var;
-				break;
-			}
-		}
-	}
-	return type;
+	auto dirs = PcAi::ai(index, k, Config::left);
+	return dirs;
 }
 
-int PcAi::rightAi(int index)
+std::vector<int> PcAi::rightAi(int index)
 {
-	int type = Config::zero;
 	int k = ceil((index + 1) / (float)Config::column) * Config::column - index - 1;
-	auto vec = GameManager::GetIns()->getAllChessmans();
-	auto chessman = dynamic_cast<ChessmanNode*>(vec.at(index));
-	for (int var = 0; var < k; var++)
-	{
-		auto node = dynamic_cast<ChessmanNode*>(vec.at(index + (var + 1)));
-		if (!node->isOpen())
-		{
-			type = Config::zero;
-			break;
-		}
-		else
-		{
-			if (node->getOpponentType() == chessman->getOpponentType())
-			{
-				type = Config::zero;
-				break;
-			}
-			if (chessman->getOpponentType() != node->getOpponentType() && chessman->getChessmanType() <= node->getChessmanType())
-			{
-				type = Config::seven - var;
-				break;
-			}
-		}
-	}
-	return type;
+	auto dirs = PcAi::ai(index, k, Config::left);
+	return dirs;
 }
 
-int PcAi::topAi(int index)
+std::vector<int> PcAi::topAi(int index)
 {
-	int type = Config::zero;
-	int i = 1;
 	int k = Config::row - ceil(index / (float)Config::column);
-	auto vec = GameManager::GetIns()->getAllChessmans();
-	auto chessman = dynamic_cast<ChessmanNode*>(vec.at(index));
-	for (int var = 0; var < k; var++)
-	{
-		int at = index + (Config::column * i) - 1;
-		auto node = dynamic_cast<ChessmanNode*>(vec.at(at));
-		if (!node->isOpen())
-		{
-			type = Config::zero;
-			break;
-		}
-		else
-		{
-			if (node->getOpponentType() == chessman->getOpponentType())
-			{
-				type = Config::zero;
-				break;
-			}
-			if (chessman->getOpponentType() != node->getOpponentType() && chessman->getChessmanType() <= node->getChessmanType())
-			{
-				type = Config::seven - var;
-				break;
-			}
-		}
-		i++;
-	}
-	return type;
+	auto dirs = PcAi::ai(index, k, Config::left);
+	return dirs;
 }
 
-int PcAi::bottomAi(int index)
+std::vector<int> PcAi::bottomAi(int index)
+{
+	int k = ceil(index / (float)Config::column) - 1, i = 1;
+	auto dirs = PcAi::ai(index, k, Config::left);
+	return dirs;
+}
+
+std::vector<int> PcAi::ai(int index, int key, int dir)
 {
 	int type = Config::zero;
-	int k = ceil(index / (float)Config::column) - 1, i = 1;
+	std::vector<int> _dirs;
 	auto vec = GameManager::GetIns()->getAllChessmans();
 	auto chessman = dynamic_cast<ChessmanNode*>(vec.at(index));
-	for (int var = 0; var < k; var++)
+	for (int var = 0; var < key; var++)
 	{
-		int at = index - (Config::column * i) - 1;
+		int at = index - PcAi::getNextDirectionIndex(index, dir, var + 1);
 		auto node = dynamic_cast<ChessmanNode*>(vec.at(at));
 		if (!node->isOpen())
 		{
@@ -197,5 +131,30 @@ int PcAi::bottomAi(int index)
 			}
 		}
 	}
-	return type;
+	_dirs.push_back(dir);
+	_dirs.push_back(type);
+	return _dirs;
+}
+
+int PcAi::getNextDirectionIndex(int index, int dir, int num)
+{
+	int _index = 0;
+	switch (dir)
+	{
+	case Config::left:
+		_index = _index - (1 * num);
+		break;
+	case Config::right:
+		_index = _index + (1 * num);
+		break;
+	case Config::top:
+		_index = _index + Config::column * num;
+		break;
+	case Config::botom:
+		_index = _index - Config::column * num;
+		break;
+	default:
+		break;
+	}
+	return _index;
 }

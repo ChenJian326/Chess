@@ -72,7 +72,7 @@ void GameMap::initChess()
 	{
 		for (j = 0; j < Config::MAP_SIZE::column; j++)
 		{
-			index += 1;
+			index++;
 			std::string str = StringUtils::toString(index);
 			auto chessman = ChessmanNode::createChessman(str);
 			type1 =random(0, (int)opponets.size() - 1);

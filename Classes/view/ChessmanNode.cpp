@@ -1,6 +1,6 @@
 #include "ChessmanNode.h"
 #include "tips\TipsManager.h"
-
+#include "ui\UIRichText.h"
 ChessmanNode::ChessmanNode()
 	:_opponentType(0),
 	_chessmanType(0),
@@ -27,21 +27,9 @@ void ChessmanNode::setChessType(int value1, int value2, int index)
 {
 	_opponentType = value1;
 	_chessmanType = value2;
-	if (index > 0)
-		_index = index - 1;
-	auto color = dynamic_cast<LayerColor*>(this->getChildByTag(colorID));
+	_index = index--;
 	auto label = dynamic_cast<Label*>(this->getChildByTag(labelID));
-	if (_opponentType == Config::OPPONENT::pc)
-	{
-		//需要设置宽高，不能回以屏幕大小为准，即时初始化的时候设置也无效
-		color->initWithColor(cc4Pc, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
-		label->setColor(cc3Pc);
-	}
-	else
-	{
-		color->initWithColor(cc4Pl, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
-		label->setColor(cc3Pl);
-	}
+	this->setChessStatus();
 	label->setString(Config::GetChessmanName(_chessmanType, _opponentType));
 	TouchManager::getIns()->addTouchNode(this, [=]() {
 		if (_gameManager->getCurrentOpponent() == Config::player) {
@@ -49,15 +37,19 @@ void ChessmanNode::setChessType(int value1, int value2, int index)
 		}
 	});
 	label->setVisible(_isOpen);
-	color->setVisible(true);
 }
 
 //棋子被吃了
-void ChessmanNode::clearChessman()
+void ChessmanNode::clearChessman(int index)
 {
-	this->getChildByTag(colorID)->setVisible(false);
+	this->setChessStatus();
 	this->getChildByTag(labelID)->setVisible(false);
 	_chessmanType = Config::nullChessman;
+	_opponentType = Config::nullChessman;
+	if (index >= 0)
+	{
+		_index = index;
+	}
 }
 
 bool ChessmanNode::isEat()
@@ -70,7 +62,7 @@ bool ChessmanNode::init()
 	if (!Node::init()) {
 		return false;
 	}
-	auto colorLayer = LayerColor::create();
+	auto colorLayer = LayerColor::create(Color4B::BLUE, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
 	colorLayer->setPosition(Vec2(2.5, 2.5));
 	this->addChild(colorLayer, 0, colorID);
 
@@ -83,6 +75,32 @@ bool ChessmanNode::init()
 	return true;
 }
 
+void ChessmanNode::setChessStatus()
+{
+	auto color = dynamic_cast<LayerColor*>(this->getChildByTag(colorID));
+	auto label = dynamic_cast<Label*>(this->getChildByTag(labelID));
+	if (_isOpen && _chessmanType != Config::nullChessman)
+	{
+		if (_opponentType == Config::OPPONENT::pc)
+		{
+			//需要设置宽高，不能回以屏幕大小为准，即时初始化的时候设置也无效
+			color->initWithColor(cc4Pc, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
+			label->setColor(cc3Pc);
+		}
+		else
+		{
+			color->initWithColor(cc4Pl, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
+			label->setColor(cc3Pl);
+		}
+	}
+	else
+	{
+		color->initWithColor(Color4B::BLUE, Config::CHESS_SIZE::width - 5, Config::CHESS_SIZE::height - 5);
+	}
+	auto rich = ui::RichText::create();
+	rich->ignoreContentAdaptWithSize(false);
+}
+
 void ChessmanNode::MoveOrSelect(bool isPc)
 {
 	if (_isOpen)
@@ -92,7 +110,7 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			_gameManager->setCurrentMoveChessman(_chessmanType);
 			_gameManager->pushMoveChessmens(this);
 		}
-		else if (_chessmanType != Config::nullChessman && _chessmanType == _gameManager->getCurrentMoveChessman())
+		else if (_chessmanType != Config::nullChessman && _opponentType != _gameManager->getSelectChessOpponent() && _chessmanType == _gameManager->getCurrentMoveChessman())
 		{
 			_gameManager->setCurrentMoveChessman(Config::nullChessman);
 			TipsManager::showTips("取消了您本次操作，请重新操作");
@@ -115,6 +133,7 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 		_gameManager->setCurrentOpponent(isPc ? Config::player : Config::pc);
 	}
 	_isOpen = true;
+	this->setChessStatus();
 }
 
 void ChessmanNode::countdown(float dt)

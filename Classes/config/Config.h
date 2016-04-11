@@ -55,6 +55,14 @@ public:
 		six,
 		seven,
 	};
+
+	enum DIRECTION
+	{
+		left,
+		right,
+		top,
+		botom
+	};
 	static const char* GBKToUTF8(const char *strChar);
 	static const char* GetChessmanName(int value, int opponetType);
 private:

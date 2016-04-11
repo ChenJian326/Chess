@@ -19,22 +19,25 @@ bool GameInfoNode::init()
 	{
 		return false;
 	}
+	
 	auto visiSize = Director::getInstance()->getVisibleSize();
+	int spacing = visiSize.height * 0.08;
+
 	_countdownLb = Label::createWithSystemFont("00:00:00", "Î¢ÈíÑÅºÚ", 22);
 	_countdownLb->setAnchorPoint(Vec2(0, 0));
 	_countdownLb->setPosition(Vec2(60, visiSize.height - 30));
 
-	_pcInfo = Label::createWithSystemFont(Config::GBKToUTF8("PC£ººìÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 22);
+	_pcInfo = Label::createWithSystemFont(Config::GBKToUTF8("PC£ººìÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 18);
 	_pcInfo->setAnchorPoint(Vec2(1, 0));
-	_pcInfo->setPosition(Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + 100));
+	_pcInfo->setPosition(Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing));
 
-	_playerInfo = Label::createWithSystemFont(Config::GBKToUTF8("Íæ¼Ò£ººÚÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 22);
+	_playerInfo = Label::createWithSystemFont(Config::GBKToUTF8("Íæ¼Ò£ººÚÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 18);
 	_playerInfo->setAnchorPoint(Vec2(0, 0));
-	_playerInfo->setPosition(Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + 100));
+	_playerInfo->setPosition(Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing));
 
-	_currentInfo = Label::createWithSystemFont("", "Î¢ÈíÑÅºÚ", 22);
-	_currentInfo->setAnchorPoint(Vec2(0, 0));
-	_currentInfo->setPosition(Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + 100));
+	_currentInfo = Label::createWithSystemFont("", "Î¢ÈíÑÅºÚ", 18);
+	_currentInfo->setAnchorPoint(Vec2(0.5, 0));
+	_currentInfo->setPosition(Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing));
 
 	this->addChild(_countdownLb);
 	this->addChild(_pcInfo);

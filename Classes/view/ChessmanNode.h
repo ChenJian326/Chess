@@ -13,9 +13,10 @@ public:
 	ChessmanNode();
 	~ChessmanNode();
 	static ChessmanNode* createChessman(const std::string &name);
+	//opponent chessman  index
 	void setChessType(int value1, int value2, int index);
 	void countdown(float dt);//pc走完以后启动一个倒计时
-	void clearChessman();
+	void clearChessman(int index = -1);
 	void MoveOrSelect(bool isPc);
 
 	int getOpponentType() const { return _opponentType; };
@@ -33,6 +34,7 @@ private:
 	bool _isOpen;
 	int _countdown;
 	int _index;
+	void setChessStatus();
 	GameManager* _gameManager;
 	Color4B cc4Pl = Color4B(30, 144, 255, 255);
 	Color3B cc3Pl = Color3B(0, 0, 0);
