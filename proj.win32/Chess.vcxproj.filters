@@ -22,6 +22,12 @@
     <Filter Include="src\scene">
       <UniqueIdentifier>{7f31cd38-af63-4a4d-961e-4964bf7daf6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ai">
+      <UniqueIdentifier>{66bff00c-ff61-4a45-aa62-310262049264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tips">
+      <UniqueIdentifier>{0b70fd9b-6a3d-4ccb-a171-9ea81c44737e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +66,12 @@
     <ClCompile Include="..\Classes\scene\GameScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\ai\PcAi.cpp">
+      <Filter>src\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\tips\TipsManager.cpp">
+      <Filter>src\tips</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -97,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\GameScene.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ai\PcAi.h">
+      <Filter>src\ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\tips\TipsManager.h">
+      <Filter>src\tips</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
