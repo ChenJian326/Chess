@@ -18,7 +18,7 @@ void TipsManager::showTips(const char* str, int fontSzie, Color3B color, float t
 		EaseExponentialOut::create(
 			Sequence::create(
 				Spawn::create(
-					DelayTime::create(0.5),
+					DelayTime::create(2.0),
 					MoveTo::create(time, Vec2(VisibleRect::center().x, VisibleRect::top().y)),
 					FadeOut::create(time),
 					nullptr

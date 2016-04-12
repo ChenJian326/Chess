@@ -35,6 +35,8 @@ private:
 	int _countdown;
 	int _index;
 	void setChessStatus();
+	//я║жпакиа
+	void setSelectStatus(bool isSelect);
 	GameManager* _gameManager;
 	Color4B cc4Pl = Color4B(30, 144, 255, 255);
 	Color3B cc3Pl = Color3B(0, 0, 0);

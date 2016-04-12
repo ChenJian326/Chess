@@ -27,6 +27,16 @@ GameManager* GameManager::GetIns()
 	return _manager;
 }
 
+void GameManager::starGame(int opponentType)
+{
+	setCurrentOpponent(opponentType);
+	PcAi::initChessIndex();
+}
+
+void GameManager::endGame(int opponentType)
+{
+}
+
 void GameManager::setCurrentOpponent(int value)
 {
 	_currentOpponent = value;

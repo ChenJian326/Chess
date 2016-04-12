@@ -7,10 +7,10 @@ Config::Config()
 Config::~Config()
 {
 }
-
+static char g_GBKConvUTF8Buf[500000];
 const char * Config::GBKToUTF8(const char * strChar)
 {
-	char g_GBKConvUTF8Buf[50000];
+	//char g_GBKConvUTF8Buf[50000];
 	iconv_t iconvH;
 	iconvH = iconv_open("utf-8", "gb2312");
 	if (iconvH == 0)

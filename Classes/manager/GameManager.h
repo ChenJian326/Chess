@@ -9,6 +9,9 @@ public:
 	GameManager();
 	~GameManager();
 	static GameManager* GetIns();
+	//用来初始化游戏的一些东西
+	void starGame(int opponentType);
+	void endGame(int opponentType);
 	void setCurrentOpponent(int value);
 	void setCurrentSelectChessman(int chessmanType);
 	void setCurrentMoveChessman(int chessmanType);

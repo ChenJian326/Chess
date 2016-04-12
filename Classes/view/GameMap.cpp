@@ -87,7 +87,6 @@ void GameMap::initChess()
 			manager->pushChessman(chessman);
 		}
 	}
-	
 	//默认为玩家先下
-	manager->setCurrentOpponent(Config::player);
+	manager->starGame(Config::player);
 }

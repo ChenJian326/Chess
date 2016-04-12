@@ -3,7 +3,6 @@
 
 #include "cocos2d\external\win32-specific\icon\include\iconv.h"
 #include <string>
-#include <vector>
 
 class Config
 {
