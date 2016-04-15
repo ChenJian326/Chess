@@ -77,7 +77,7 @@ void GameMap::initChess()
 			auto chessman = ChessmanNode::createChessman(str);
 			type1 =random(0, (int)opponets.size() - 1);
 			type2 = random(0, (int)chessmans.size() - 1);
-			chessman->setChessType(opponets.at(type1), chessmans.at(type2), index);
+			chessman->setChessType(opponets.at(type1), chessmans.at(type2),index - 1);
 			it1 = opponets.begin() + type1;
 			it2 = chessmans.begin() + type2;
 			opponets.erase(it1);

@@ -4,7 +4,7 @@
 #include <math.h>
 typedef std::map<int, std::vector<int>> PAIR;
 
-int PcAi::_nextIndex = 0;
+int PcAi::_direction = 0;
 std::vector<int> PcAi::_chessIndexs = {};
 static bool _isInit = false;
 
@@ -29,7 +29,7 @@ int PcAi::startAi(int opponentType = Config::pc)
 	std::map<int, std::vector<std::vector<int>>>::iterator itr;
 	auto vec = GameManager::GetIns()->getChessmans(opponentType);
 	int chessIndex = 0, index = 0;
-	_nextIndex = Config::nullChessman;
+	_direction = Config::nullChessman;
 
 	for (unsigned int var = 0; var < vec.size(); var++)
 	{
@@ -37,11 +37,12 @@ int PcAi::startAi(int opponentType = Config::pc)
 		if (node->isOpen())
 		{
 			chessIndex = node->getIndex();
-			_chessInfoMap[var] = std::vector<std::vector<int>>{ PcAi::leftAi(chessIndex) ,PcAi::rightAi(chessIndex), PcAi::topAi(chessIndex) ,PcAi::bottomAi(chessIndex) };
+			_chessInfoMap[node->getIndex()] = std::vector<std::vector<int>>{ PcAi::leftAi(chessIndex) ,PcAi::rightAi(chessIndex), PcAi::topAi(chessIndex) ,PcAi::bottomAi(chessIndex) };
 		}
 		else if (_isInit)
 		{
-			_chessIndexs.push_back(var);
+			_chessIndexs.push_back(node->getIndex());
+			CCLOG("_chessIndexs push index = %d", node->getIndex());
 		}
 	}
 	for (itr = _chessInfoMap.begin(); itr != _chessInfoMap.end(); itr++)
@@ -58,22 +59,20 @@ int PcAi::startAi(int opponentType = Config::pc)
 	if (_chessIndexs.size() == vec.size())
 	{
 		index = _chessIndexs.at(random(0, (int)_chessIndexs.size() - 1));
-		PcAi::clearOrFindChessIndex(index);
 	}
 	else
 	{	//如果没有可以行动的棋子
 		if (_chessSortVec.at(0).begin()->second.at(1) <= 0)
 		{
 			index = _chessIndexs.at(random(0, (int)_chessIndexs.size() - 1));
-			PcAi::clearOrFindChessIndex(index);
 		}
 		else
 		{
 			index = _chessSortVec.at(0).begin()->first;
-			_nextIndex = PcAi::getNextDirectionIndex(index, _chessSortVec.at(0).begin()->second.at(0), 1);
+			_direction = _chessSortVec.at(0).begin()->second.at(0);
 		}
 	}
-	CCLOG("index = %d ***** _nextIndex = %d", index, _nextIndex);
+	CCLOG("[startAi] index = %d ***** _direction = %d", index, _direction);
 	_isInit = false;
 	return index;
 }
@@ -89,7 +88,7 @@ void PcAi::initChessIndex()
 
 std::vector<int> PcAi::leftAi(int index)
 {
-	int k = Config::column - (ceil((index + 1) / (float)Config::column) * Config::column - index - 1);
+	int k = Config::column - (ceil((index + 1) / (float)Config::column) * Config::column - index);
 	auto dirs = PcAi::ai(index, k, Config::left);
 	return dirs;
 }
@@ -103,14 +102,14 @@ std::vector<int> PcAi::rightAi(int index)
 
 std::vector<int> PcAi::topAi(int index)
 {
-	int k = Config::row - ceil(index / (float)Config::column);
+	int k = Config::row - ceil((index + 1) / (float)Config::column);
 	auto dirs = PcAi::ai(index, k, Config::top);
 	return dirs;
 }
 
 std::vector<int> PcAi::bottomAi(int index)
 {
-	int k = ceil(index / (float)Config::column) - 1, i = 1;
+	int k = ceil((index + 1) / (float)Config::column) - 1;
 	auto dirs = PcAi::ai(index, k, Config::botom);
 	return dirs;
 }
@@ -124,7 +123,6 @@ std::vector<int> PcAi::ai(int index, int key, int dir)
 	for (int var = 0; var < key; var++)
 	{
 		int at = PcAi::getNextDirectionIndex(index, dir, var + 1);
-		CCLOG("<at = %d>----<index = %d>----<dir = %d>---<key = %d>",at,index, dir, key);
 		auto node = dynamic_cast<ChessmanNode*>(vec.at(at));
 		if (!node->isOpen())
 		{
@@ -135,19 +133,26 @@ std::vector<int> PcAi::ai(int index, int key, int dir)
 		{
 			if (node->getOpponentType() == chessman->getOpponentType())
 			{
-				number = Config::zero;
+				number += Config::zero;
 				break;
 			}
-			else if (chessman->getChessmanType() <= node->getChessmanType() || (chessman->getChessmanType() == Config::soldiers && node->getChessmanType() == Config::handsome) )
+			else if (node->getChessmanType() == Config::nullChessman) {
+				number += Config::one;
+			}
+			else if (chessman->getChessmanType() <= node->getChessmanType() || (chessman->getChessmanType() == Config::soldiers && node->getChessmanType() == Config::handsome))
 			{
-				number = Config::seven - var;
+				number += Config::seven - var;
+				break;
+			}
+			else
+			{
+				number = Config::zero;
 				break;
 			}
 		}
 	}
 	_dirs.push_back(dir);
 	_dirs.push_back(number);
-	CCLOG("ai results <number = %d>----<dir = %d>", number, dir);
 	return _dirs;
 }
 
@@ -169,7 +174,6 @@ int PcAi::clearOrFindChessIndex(int index, bool isFind)
 			break;
 		}
 	}
-	CCLOG("findIndex = %d index = %d ", findIndex, index);
 	return findIndex;
 }
 
@@ -193,6 +197,5 @@ int PcAi::getNextDirectionIndex(int index, int dir, int num)
 	default:
 		break;
 	}
-	CCLOG("getNextDirectionIndex _index = %d num = %d", _index,num);
 	return _index;
 }

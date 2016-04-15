@@ -15,16 +15,17 @@ void TipsManager::showTips(const char* str, int fontSzie, Color3B color, float t
 	label->setPosition(Vec2(VisibleRect::center().x, VisibleRect::center().y + 100));
 	label->setCascadeOpacityEnabled(true);
 	label->runAction(
-		EaseExponentialOut::create(
-			Sequence::create(
+		Sequence::create(
+			DelayTime::create(2.0),
+			EaseExponentialOut::create(
 				Spawn::create(
-					DelayTime::create(2.0),
 					MoveTo::create(time, Vec2(VisibleRect::center().x, VisibleRect::top().y)),
 					FadeOut::create(time),
 					nullptr
-					),
-				RemoveSelf::create(),
-				nullptr)));
+				)
+			),
+			RemoveSelf::create(),
+			nullptr));
 	Director::getInstance()->getRunningScene()->addChild(label);
 }
 

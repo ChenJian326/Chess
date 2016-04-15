@@ -62,6 +62,12 @@ public:
 		top,
 		botom
 	};
+
+	enum TYPE
+	{
+		TYPE_CHESS,
+		TYPE_OPPONENT
+	};
 	static const char* GBKToUTF8(const char *strChar);
 	static const char* GetChessmanName(int value, int opponetType);
 private:
