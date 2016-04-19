@@ -72,6 +72,15 @@
     <ClCompile Include="..\Classes\tips\TipsManager.cpp">
       <Filter>src\tips</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\config\DisplayTools.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\GameEndScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\view\GameEndNode.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -115,6 +124,15 @@
     </ClInclude>
     <ClInclude Include="..\Classes\tips\TipsManager.h">
       <Filter>src\tips</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\config\DisplayTools.h">
+      <Filter>src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\GameEndScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\view\GameEndNode.h">
+      <Filter>src\view</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
