@@ -7,20 +7,30 @@
 GameMap::GameMap()
 	:nodeId(10)
 {
-	chessmans = {
-		Config::handsome ,Config::handsome ,
-		Config::finishing ,Config::finishing ,Config::finishing ,Config::finishing ,
-		Config::phase ,Config::phase ,Config::phase ,Config::phase ,
-		Config::horse,Config::horse,Config::horse,Config::horse,
-		Config::car,Config::car,Config::car,Config::car,
-		Config::cannon,Config::cannon,Config::cannon,Config::cannon,
-		Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers,Config::soldiers
+	_chessmans = {};
+	std::function<void(int, int)> func = [=](int num, int chess) {
+		int k = num * 0.5;
+		int type = Config::pc;
+		for (int i = 0; i < num; i++)
+		{
+			if (i >= k)
+			{
+				type = Config::player;
+			}
+			_chessmans.push_back({ type ,chess });
+		}
 	};
-	opponets = {
-		Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,
-		Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player ,Config::player,
-		Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc,Config::pc
-	};
+	func(2, Config::handsome);
+	func(4, Config::finishing);
+	func(4, Config::phase);
+	func(4, Config::horse);
+	func(4, Config::car);
+	func(4, Config::cannon);
+	func(10, Config::soldiers);
+	//随机打乱顺序
+	std::random_shuffle(_chessmans.begin(), _chessmans.end() ,[=](int vec) {
+		return random(0,10) % vec;
+	});
 }
 
 GameMap::~GameMap()
@@ -62,12 +72,11 @@ bool GameMap::init()
 
 void GameMap::initChess()
 {
-	int i, j, index = 0,type1,type2;
+	int i, j, index = 0,randIndex;
+	std::vector<int> randVec;
 	auto manager = GameManager::GetIns();
 	int space = Config::CHESS_SIZE::width;
 	auto node = this->getChildByTag(nodeId);
-	std::vector<int>::iterator it1 ;
-	std::vector<int>::iterator it2 ;
 	for (i = 0; i < Config::MAP_SIZE::row; i++)
 	{
 		for (j = 0; j < Config::MAP_SIZE::column; j++)
@@ -75,16 +84,13 @@ void GameMap::initChess()
 			index++;
 			std::string str = StringUtils::toString(index);
 			auto chessman = ChessmanNode::createChessman(str);
-			type1 =random(0, (int)opponets.size() - 1);
-			type2 = random(0, (int)chessmans.size() - 1);
-			chessman->setChessType(opponets.at(type1), chessmans.at(type2),index - 1);
-			it1 = opponets.begin() + type1;
-			it2 = chessmans.begin() + type2;
-			opponets.erase(it1);
-			chessmans.erase(it2);
+			randIndex = random(0, (int)_chessmans.size() - 1);
+			randVec = _chessmans.at(randIndex);
+			chessman->setChessType(randVec.at(0), randVec.at(1), index - 1);
 			chessman->setPosition(Vec2(j * space, i * space));
 			node->addChild(chessman);
 			manager->pushChessman(chessman);
+			_chessmans.erase(_chessmans.begin() + randIndex);
 		}
 	}
 	//默认为玩家先下

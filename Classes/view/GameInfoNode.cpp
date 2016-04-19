@@ -19,30 +19,29 @@ bool GameInfoNode::init()
 	{
 		return false;
 	}
-	
+
 	auto visiSize = Director::getInstance()->getVisibleSize();
 	int spacing = visiSize.height * 0.08;
 
-	_countdownLb = Label::createWithSystemFont("00:00:00", "Î¢ÈíÑÅºÚ", 22);
-	_countdownLb->setAnchorPoint(Vec2(0, 0));
-	_countdownLb->setPosition(Vec2(60, visiSize.height - 30));
-
-	_pcInfo = Label::createWithSystemFont(Config::GBKToUTF8("PC£ººìÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 18);
-	_pcInfo->setAnchorPoint(Vec2(1, 0));
-	_pcInfo->setPosition(Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing));
-
-	_playerInfo = Label::createWithSystemFont(Config::GBKToUTF8("Íæ¼Ò£ººÚÉ«Æå×Ó"), "Î¢ÈíÑÅºÚ", 18);
-	_playerInfo->setAnchorPoint(Vec2(0, 0));
-	_playerInfo->setPosition(Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing));
-
-	_currentInfo = Label::createWithSystemFont("", "Î¢ÈíÑÅºÚ", 18);
-	_currentInfo->setAnchorPoint(Vec2(0.5, 0));
-	_currentInfo->setPosition(Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing));
+	auto createLabel = [=](const char *text, int fontSize, Vec2 apos, Vec2 pos)->Label* {
+		auto label = Label::createWithSystemFont(text, "Î¢ÈíÑÅºÚ", fontSize);
+		label->setAnchorPoint(apos);
+		label->setPosition(pos);
+		return label;
+	};
+	_countdownLb = createLabel("00:00:00", 22, Vec2(0, 0), Vec2(60, visiSize.height - 30));
+	_pcInfo = createLabel(Config::GBKToUTF8("PC£ººìÉ«Æå×Ó"), 18, Vec2(1, 0), Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing));
+	_playerInfo = createLabel(Config::GBKToUTF8("player£ººÚÉ«Æå×Ó"), 18, Vec2(0, 0), Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing));
+	_currentInfo = createLabel("", 18, Vec2(0.5, 0), Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing));
+	_pcScore = createLabel("pc:0", 18, Vec2(0, 0), Vec2(VisibleRect::left().x + 80, visiSize.height - 70));
+	_playerScore = createLabel("player:0", 18, Vec2(0, 0), Vec2(VisibleRect::right().x - 150, visiSize.height - 70));
 
 	this->addChild(_countdownLb);
 	this->addChild(_pcInfo);
 	this->addChild(_playerInfo);
 	this->addChild(_currentInfo);
+	this->addChild(_pcScore);
+	this->addChild(_playerScore);
 
 	EventManager::getIns()->addEventListener(EventManager::EVENT_NEXT_COUNTDOWN, "", [this](EventCustom* event) {
 		auto userData = static_cast<int*>(event->getUserData());
@@ -64,6 +63,7 @@ bool GameInfoNode::init()
 			_currentInfo->setString(Config::GBKToUTF8("µ±Ç°ÏÂÆå£ºPC"));
 		}
 	}, this);
+
 	return true;
 }
 void GameInfoNode::showCountdown(float td)
@@ -72,7 +72,7 @@ void GameInfoNode::showCountdown(float td)
 	if (_countdown <= 0)
 	{
 		this->stopCountdown();
-		if(_isShowTips){
+		if (_isShowTips) {
 			TipsManager::showTips("Î¹£¡¿ìµãÏÂÆå°¡£¬ÔõÃ´ÏëÁËÄÇÃ´¾Ã°¡");
 		}
 	}
@@ -81,7 +81,7 @@ void GameInfoNode::showCountdown(float td)
 	{
 		sprintf(str, "00:00:0%d", _countdown);
 	}
-	else 
+	else
 	{
 		sprintf(str, "00:00:%d", _countdown);
 	}
@@ -91,4 +91,13 @@ void GameInfoNode::showCountdown(float td)
 void GameInfoNode::stopCountdown()
 {
 	this->unschedule(CC_SCHEDULE_SELECTOR(GameInfoNode::showCountdown));
+}
+
+void GameInfoNode::updateScore(int score1, int score2)
+{
+	char str[12];
+	sprintf(str, "pc:%d", 16 - score2);
+	_pcScore->setString(str);
+	sprintf(str, "player:%d", 16 - score1);
+	_playerScore->setString(str);
 }

@@ -9,6 +9,7 @@ public:
 	~GameInfoNode();
 	void showCountdown(float td);
 	void stopCountdown();
+	void updateScore(int score1, int score2);
 	CREATE_FUNC(GameInfoNode);
 private:
 	bool virtual init();
@@ -18,6 +19,8 @@ private:
 	Label* _pcInfo;
 	Label* _playerInfo;
 	Label* _currentInfo;
+	Label* _pcScore;
+	Label* _playerScore;
 };
 
 #endif

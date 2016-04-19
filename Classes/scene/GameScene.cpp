@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "view\GameMap.h"
 #include "view\GameInfoNode.h"
+#include "manager\EventManager.h"
 GameScene::GameScene()
 {
 }
@@ -30,6 +31,10 @@ bool GameScene::init()
 	auto infoPanel = GameInfoNode::create();
 	this->addChild(infoPanel);
 	this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::showMap),0.05);
+	EventManager::getIns()->addEventListener(EventManager::EVENT_UPDATE_SCORE, "", [=](EventCustom* event) {
+		auto userData = static_cast<std::vector<int>*>(event->getUserData());
+		infoPanel->updateScore(userData->at(0), userData->at(1));
+	}, this);
 	return true;
 }
 

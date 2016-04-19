@@ -21,6 +21,8 @@ public:
 	void pushChessman(Node* node);
 	void pushMoveChessmens(Node* node);
 	bool isEatOrMove(int opponentType);
+	bool isConnect(int index);
+	void cancelSelectChess();
 	int removeOrFindChess(int index, bool isRemove = false, int opponentType = Config::pc);
 	int getCurrentOpponent() { return _currentOpponent; };
 	int getCurrentSelectChessman() { return _currentSelectChessman; };

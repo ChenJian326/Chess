@@ -8,13 +8,11 @@ public:
 	GameMap();
 	~GameMap();
 	CREATE_FUNC(GameMap);
-	//static Node* createMap();
 private:
 	virtual bool init();
 	void initChess();
 	int nodeId;
-	std::vector<int> opponets;
-	std::vector<int> chessmans;
+	std::vector<std::vector<int>> _chessmans;
 };
 
 
