@@ -1,5 +1,6 @@
 #include "TouchManager.h"
 #include <new>
+#include "config\Config.h"
 static TouchManager *_ins = nullptr;
 //
 TouchManager::TouchManager()
@@ -38,8 +39,9 @@ bool TouchManager::onTouchBegan(Touch* touch, Event* event)
 	auto touchPoint = touchNode->getParent()->convertToNodeSpace(touch->getLocation());
 	if (touchNode->getBoundingBox().containsPoint(touchPoint)) {
 		isTouch = true;
-		//CCLOG("%s","touch beagn ok");
+		CCLOG("%s %s", "onTouchBegan", Config::GBKToUTF8(touchNode->getName().c_str()));
 	}
+	CCLOG("%s %s", "onTouchBegan", Config::GBKToUTF8(touchNode->getName().c_str()));
 	return isTouch;
 }
 
@@ -54,7 +56,7 @@ void TouchManager::onTouchEnded(Touch* touch, Event* event)
 	if (!touchNode->getBoundingBox().containsPoint(touchNode->getParent()->convertToNodeSpace(touch->getLocation()))) {
 		return ;
 	}
-	if (!_callBackFuncMap.empty())
+	if (!_callBackFuncMap.empty() && _callBackFuncMap[touchNode->getName()])
 	{
 		_callBackFuncMap[touchNode->getName()]();
 	}

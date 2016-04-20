@@ -88,7 +88,7 @@ void GameMap::initChess()
 			randVec = _chessmans.at(randIndex);
 			chessman->setChessType(randVec.at(0), randVec.at(1), index - 1);
 			chessman->setPosition(Vec2(j * space, i * space));
-			node->addChild(chessman);
+			node->addChild(chessman,0, str);
 			manager->pushChessman(chessman);
 			_chessmans.erase(_chessmans.begin() + randIndex);
 		}

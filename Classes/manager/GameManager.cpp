@@ -66,7 +66,7 @@ void GameManager::setCurrentOpponent(int value)
 		auto index = this->removeOrFindChess(PcAi::startAi(_currentOpponent));
 		if (PcAi::getDirection() == Config::nullChessman) {
 			dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->MoveOrSelect(true);
-		//	CCLOG("[setCurrentOpponent 1] <index = %d %d>", dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->getIndex(), index);
+			CCLOG("[setCurrentOpponent 1] <index = %d %d>", dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->getIndex(), index);
 		}
 		else
 		{

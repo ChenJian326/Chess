@@ -19,7 +19,7 @@ ChessmanNode::~ChessmanNode()
 ChessmanNode * ChessmanNode::createChessman(const std::string &name)
 {
 	ChessmanNode *chessman = ChessmanNode::create();
-	chessman->setName(name);
+//	chessman->setName(name);
 	return chessman;
 }
 
@@ -31,11 +31,6 @@ void ChessmanNode::setChessType(int value1, int value2, int index)
 	auto label = dynamic_cast<Label*>(this->getChildByTag(labelID));
 	this->setChessStatus();
 	label->setString(Config::GetChessmanName(_chessmanType, _opponentType));
-	TouchManager::getIns()->addTouchNode(this, [=]() {
-		if (_gameManager->getCurrentOpponent() == Config::player) {
-			this->MoveOrSelect(false);
-		}
-	});
 	label->setVisible(_isOpen);
 	this->setSelectStatus(false);
 }
@@ -49,7 +44,7 @@ void ChessmanNode::clearChessman(int index)
 	this->getChildByTag(labelID)->setVisible(false);
 	this->setChessStatus();
 	this->setSelectStatus(false);
-//	CCLOG("_chessmanType = %d _opponentType = %d index = %d", _chessmanType, _opponentType, _index);
+	//	CCLOG("_chessmanType = %d _opponentType = %d index = %d", _chessmanType, _opponentType, _index);
 }
 
 bool ChessmanNode::isEat()
@@ -72,7 +67,24 @@ bool ChessmanNode::init()
 	this->addChild(label, 0, labelID);
 	this->setContentSize(Size(Config::CHESS_SIZE::width, Config::CHESS_SIZE::height));
 	this->setCascadeOpacityEnabled(true);
+	//this->setOnEnterCallback();
 	return true;
+}
+
+void ChessmanNode::onEnter()
+{
+	Node::onEnter();
+}
+
+void ChessmanNode::onEnterTransitionDidFinish()
+{
+	Node::onEnterTransitionDidFinish();
+	TouchManager::getIns()->addTouchNode(this, [=]() {
+		if (_gameManager->getCurrentOpponent() == Config::player) {
+			this->MoveOrSelect(false);
+		}
+	});
+	CCLOG("%s", Config::GBKToUTF8(this->getName().c_str()));
 }
 
 void ChessmanNode::setChessStatus()
@@ -120,7 +132,7 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			_gameManager->setCurrentMoveChessman(_chessmanType);
 			_gameManager->pushMoveChessmens(this);
 			this->setSelectStatus(true);
-		//	CCLOG("[MoveOrSelect 1]  _index = %d  _chessmanType = %d", _index, _chessmanType);
+			CCLOG("[MoveOrSelect 1]  _index = %d  _chessmanType = %d", _index, _chessmanType);
 		}
 		else if (currentSelectChessman == Config::nullChessman && currentMoveChessman != Config::nullChessman)
 		{
@@ -128,7 +140,7 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			{
 				_gameManager->setCurrentSelectChessman(_chessmanType);
 				bool isEat = _gameManager->isEatOrMove(_opponentType);
-		//		CCLOG("[MoveOrSelect 2]  _index = %d _chessmanType = %d", _index, _chessmanType);
+				//		CCLOG("[MoveOrSelect 2]  _index = %d _chessmanType = %d", _index, _chessmanType);
 				if (isEat)
 				{
 					_gameManager->pushMoveChessmens(this);

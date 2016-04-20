@@ -29,6 +29,8 @@ public:
 	CREATE_FUNC(ChessmanNode);
 private:
 	bool virtual init();
+	void virtual onEnter();
+	void virtual onEnterTransitionDidFinish();
 	int _opponentType;
 	int _chessmanType;//-1表示被吃掉了
 	int colorID;
