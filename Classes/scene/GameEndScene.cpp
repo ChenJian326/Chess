@@ -1,13 +1,8 @@
 #include "GameEndScene.h"
-
+#include "view\GameEndNode.h"
 GameEndScene::GameEndScene()
 	:_winType(Config::pc)
 {
-}
-
-GameEndScene::GameEndScene(int winType)
-{
-	_winType = winType;
 }
 
 GameEndScene::~GameEndScene()
@@ -20,9 +15,7 @@ bool GameEndScene::init()
 	{
 		return false;
 	}
-	if (_winType == Config::pc)
-	{
-
-	}
+	auto node = GameEndNode::create();
+	this->addChild(node);
 	return true;
 }

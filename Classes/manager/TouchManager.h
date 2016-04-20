@@ -11,6 +11,7 @@ public:
 	~TouchManager();
 	static TouchManager* getIns();
 	void addTouchNode(Node *node,std::function<void()> func);
+	void removeTouchs();
 private:
 	bool onTouchBegan(Touch* touch, Event* event);
 	void onTouchMoved(Touch* touch, Event* event);

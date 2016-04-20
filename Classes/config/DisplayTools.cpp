@@ -8,18 +8,21 @@ DisplayTools::~DisplayTools()
 {
 }
 
-Label * DisplayTools::createLabel(const char * str, int fontSize, Vec2 pos, Vec2 apos, Color3B color)
+Label * DisplayTools::createLabel(const char * str, int fontSize, Vec2 pos, Vec2 apos, Color3B color, TextVAlignment va, TextHAlignment ha)
 {
 	auto label = Label::createWithSystemFont(str,"Î¢ÈíÑÅºÚ",fontSize,Size::ZERO);
 	label->setColor(color);
 	label->setPosition(pos);
-	label->setAnchorPoint(pos);
-	label->setVerticalAlignment(TextVAlignment::CENTER);
-	label->setHorizontalAlignment(TextHAlignment::CENTER);
+	label->setAnchorPoint(apos);
+	label->setVerticalAlignment(va);
+	label->setHorizontalAlignment(ha);
 	return label;
 }
 
-Node * DisplayTools::createNode()
+Node * DisplayTools::createNode(Vec2 pos, Vec2 apos )
 {
-	return nullptr;
+	auto node = Node::create();
+	node->setPosition(pos);
+	node->setAnchorPoint(apos);
+	return node;
 }

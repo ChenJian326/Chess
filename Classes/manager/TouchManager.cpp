@@ -32,6 +32,11 @@ void TouchManager::addTouchNode(Node *node,std::function<void()> func)
 	node->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, node);
 }
 
+void TouchManager::removeTouchs()
+{
+	_callBackFuncMap.erase(_callBackFuncMap.begin(), _callBackFuncMap.end());
+}
+
 bool TouchManager::onTouchBegan(Touch* touch, Event* event)
 {
 	bool isTouch = false;

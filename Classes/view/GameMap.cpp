@@ -56,14 +56,14 @@ bool GameMap::init()
 	{
 		auto line = DrawNode::create();
 		line->setLineWidth(5);
-		line->drawLine(Vec2(0, i * space), Vec2(Config::MAP_SIZE::w, i * space), Color4F(0.5, 0.5, 0.2, 1));
+		line->drawLine(Vec2(0.0, i * space), Vec2(Config::MAP_SIZE::w, i * space), Color4F(0.5, 0.5, 0.2, 1));
 		lineNode->addChild(line);
 	}
 	for (j = 0; j < Config::MAP_SIZE::column + 1; j++)
 	{
 		auto line = DrawNode::create();
 		line->setLineWidth(5);
-		line->drawLine(Vec2(j * space, 0), Vec2(j * space, Config::MAP_SIZE::h), Color4F(0.5, 0.5, 0.2, 1));
+		line->drawLine(Vec2(j * space, 0.0), Vec2(j * space, Config::MAP_SIZE::h), Color4F(0.5, 0.5, 0.2, 1));
 		lineNode->addChild(line);
 	}
 	this->initChess();
@@ -83,7 +83,7 @@ void GameMap::initChess()
 		{
 			index++;
 			std::string str = StringUtils::toString(index);
-			auto chessman = ChessmanNode::createChessman(str);
+			auto chessman = ChessmanNode::createChessman();
 			randIndex = random(0, (int)_chessmans.size() - 1);
 			randVec = _chessmans.at(randIndex);
 			chessman->setChessType(randVec.at(0), randVec.at(1), index - 1);

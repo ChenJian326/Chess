@@ -2,6 +2,7 @@
 #include "view\GameMap.h"
 #include "view\GameInfoNode.h"
 #include "manager\EventManager.h"
+#include "GameEndScene.h"
 GameScene::GameScene()
 {
 }
@@ -33,7 +34,13 @@ bool GameScene::init()
 	this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::showMap),0.05);
 	EventManager::getIns()->addEventListener(EventManager::EVENT_UPDATE_SCORE, "", [=](EventCustom* event) {
 		auto userData = static_cast<std::vector<int>*>(event->getUserData());
-		infoPanel->updateScore(userData->at(0), userData->at(1));
+		int pcSize = userData->at(0);
+		int plSize = userData->at(1);
+		infoPanel->updateScore(pcSize, plSize);
+	}, this);
+	EventManager::getIns()->addEventListener(EventManager::EVENT_GAME_END, "", [=](EventCustom* event) {
+		auto scene = GameEndScene::create();
+		Director::getInstance()->replaceScene(scene);
 	}, this);
 	return true;
 }

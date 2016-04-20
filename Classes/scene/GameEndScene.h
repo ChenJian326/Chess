@@ -7,7 +7,6 @@ class GameEndScene :public Scene
 {
 public:
 	GameEndScene();
-	GameEndScene(int winType);
 	~GameEndScene();
 	CREATE_FUNC(GameEndScene);
 private:

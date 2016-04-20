@@ -8,13 +8,12 @@ class GameEndNode :public Node
 {
 public:
 	GameEndNode();
-	GameEndNode(int winType);
 	~GameEndNode();
 	CREATE_FUNC(GameEndNode);
 private:
 	bool virtual init();
-	void showPlayPcWin();
-	void showPlayPLWin();
+	void continueGame(Ref* pSender);
+	void exitGame(Ref* pSender);
 	int _winType;
 };
 

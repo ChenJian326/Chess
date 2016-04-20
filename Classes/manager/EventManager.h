@@ -11,6 +11,7 @@ class EventManager
 public:
 	static const std::string EVENT_NEXT_COUNTDOWN;
 	static const std::string EVENT_UPDATE_SCORE;
+	static const std::string EVENT_GAME_END;
 	EventManager();
 	~EventManager();
 	static EventManager* getIns();

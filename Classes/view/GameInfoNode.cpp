@@ -3,6 +3,7 @@
 #include "config\Config.h"
 #include "config\VisibleRect.h"
 #include "tips\TipsManager.h"
+#include "config\DisplayTools.h"
 
 GameInfoNode::GameInfoNode()
 	:_countdown(0)
@@ -23,18 +24,12 @@ bool GameInfoNode::init()
 	auto visiSize = Director::getInstance()->getVisibleSize();
 	int spacing = visiSize.height * 0.08;
 
-	auto createLabel = [=](const char *text, int fontSize, Vec2 apos, Vec2 pos)->Label* {
-		auto label = Label::createWithSystemFont(text, "微软雅黑", fontSize);
-		label->setAnchorPoint(apos);
-		label->setPosition(pos);
-		return label;
-	};
-	_countdownLb = createLabel("00:00:00", 22, Vec2(0, 0), Vec2(60, visiSize.height - 30));
-	_pcInfo = createLabel(Config::GBKToUTF8("PC：红色棋子"), 18, Vec2(1, 0), Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing));
-	_playerInfo = createLabel(Config::GBKToUTF8("player：黑色棋子"), 18, Vec2(0, 0), Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing));
-	_currentInfo = createLabel("", 18, Vec2(0.5, 0), Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing));
-	_pcScore = createLabel("pc:0", 18, Vec2(0, 0), Vec2(VisibleRect::left().x + 80, visiSize.height - 70));
-	_playerScore = createLabel("player:0", 18, Vec2(0, 0), Vec2(VisibleRect::right().x - 150, visiSize.height - 70));
+	_countdownLb = DisplayTools::createLabel("00:00:00", 22, Vec2(60, visiSize.height - 30), Vec2(0, 0));
+	_pcInfo = DisplayTools::createLabel(Config::GBKToUTF8("PC：红色棋子"), 18, Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(1, 0));
+	_playerInfo = DisplayTools::createLabel(Config::GBKToUTF8("player：黑色棋子"), 18, Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(0, 0));
+	_currentInfo = DisplayTools::createLabel("", 18, Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing), Vec2(0.5, 0));
+	_pcScore = DisplayTools::createLabel("pc:0", 18, Vec2(VisibleRect::left().x + 80, visiSize.height - 70), Vec2(0, 0));
+	_playerScore = DisplayTools::createLabel("player:0", 18, Vec2(VisibleRect::right().x - 150, visiSize.height - 70), Vec2(0, 0));
 
 	this->addChild(_countdownLb);
 	this->addChild(_pcInfo);

@@ -16,10 +16,9 @@ ChessmanNode::~ChessmanNode()
 {
 }
 
-ChessmanNode * ChessmanNode::createChessman(const std::string &name)
+ChessmanNode * ChessmanNode::createChessman()
 {
 	ChessmanNode *chessman = ChessmanNode::create();
-//	chessman->setName(name);
 	return chessman;
 }
 
@@ -183,10 +182,4 @@ void ChessmanNode::setSelectStatus(bool isSelect)
 		this->stopAllActions();
 		this->setOpacity(255);
 	}
-}
-
-
-void ChessmanNode::countdown(float dt)
-{
-
 }

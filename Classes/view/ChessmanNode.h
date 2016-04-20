@@ -12,10 +12,9 @@ class ChessmanNode :public Node
 public:
 	ChessmanNode();
 	~ChessmanNode();
-	static ChessmanNode* createChessman(const std::string &name);
+	static ChessmanNode* createChessman();
 	//opponent chessman  index
 	void setChessType(int value1, int value2, int index);
-	void countdown(float dt);//pc走完以后启动一个倒计时
 	void clearChessman(int index = -1);
 	void MoveOrSelect(bool isPc);
 	//选中了闪

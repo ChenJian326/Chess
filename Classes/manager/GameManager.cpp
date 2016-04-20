@@ -28,22 +28,38 @@ GameManager* GameManager::GetIns()
 
 void GameManager::starGame(int opponentType)
 {
+	_winType = Config::nullChessman;
 	setCurrentOpponent(opponentType);
 	PcAi::initChessIndex();
 }
-
+//游戏结束了
 void GameManager::endGame(int opponentType)
+{
+	_currentMoveChessman = Config::nullChessman;
+	_currentSelectChessman = Config::nullChessman;
+	_currentOpponent = Config::nullChessman;
+	_pcChessmans.erase(_pcChessmans.begin(), _pcChessmans.end());
+	_playerChessmans.erase(_playerChessmans.begin(), _playerChessmans.end());
+	_allChessmans.erase(_allChessmans.begin(), _allChessmans.end());
+	_moveChessmens.erase(_moveChessmens.begin(), _moveChessmens.end());
+	TouchManager::getIns()->removeTouchs();//清除掉之前的touch function
+	EventManager::getIns()->dispatchEvent(EventManager::EVENT_GAME_END, nullptr);
+}
+
+void GameManager::checkIsEndGame(int opponentType)
 {
 	unsigned int pcSize = _pcChessmans.size();
 	unsigned int playerSize = _playerChessmans.size();
 	std::vector<unsigned int> datas = { pcSize, playerSize };
 	if (pcSize <= 0)
 	{
-		CCLOG("player win game over");
+		_winType = Config::pc;
+		this->endGame(opponentType);
 	}
 	else if (playerSize <= 0)
 	{
-		CCLOG("pc win game over");
+		_winType = Config::player;
+		this->endGame(opponentType);
 	}
 	else
 	{
@@ -71,7 +87,7 @@ void GameManager::setCurrentOpponent(int value)
 		else
 		{
 			auto chess1 = dynamic_cast<ChessmanNode*>(_pcChessmans.at(index));
-		//	CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
+			//	CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
 			chess1->MoveOrSelect(true);
 			int chessIndex = PcAi::getNextDirectionIndex(chess1->getIndex(), PcAi::getDirection(), 1);
 			unsigned int length = _allChessmans.size();
@@ -85,7 +101,7 @@ void GameManager::setCurrentOpponent(int value)
 					break;
 				}
 			}
-		//	CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex());
+			//	CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex());
 			chess2->runAction(Sequence::create(DelayTime::create(0.8), CallFunc::create(
 				[=]() {
 				chess2->MoveOrSelect(true);
@@ -106,11 +122,6 @@ void GameManager::setCurrentMoveChessman(int chessmanType)
 	_currentMoveChessman = chessmanType;
 }
 
-void GameManager::startTime()
-{
-	//_director->getScheduler()->scheduleScriptFunc(schedule_selector(), 10, false);
-}
-//
 bool GameManager::isEatOrMove(int opponentType)
 {
 	bool isEatOrMove = false;
@@ -209,7 +220,7 @@ void GameManager::moveChessman(int opponentType)
 		}
 		this->cancelSelectChess();
 		CCLOG("<moveChessman> type1 = %d type2 = %d index1 = %d index2 = %d", type1, type2, chessman1->getIndex(), chessman2->getIndex());
-		this->endGame(opponentType);
+		this->checkIsEndGame(opponentType);
 	}
 }
 

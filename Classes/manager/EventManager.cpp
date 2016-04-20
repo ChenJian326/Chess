@@ -3,6 +3,7 @@
 
 const std::string EventManager::EVENT_NEXT_COUNTDOWN = "EVENT_NEXT_COUNTDOWN";
 const std::string EventManager::EVENT_UPDATE_SCORE = "EVENT_UPDATE_SCORE";
+const std::string EventManager::EVENT_GAME_END = "EVENT_GAME_END";
 static EventManager* _ins;
 EventManager::EventManager()
 {
