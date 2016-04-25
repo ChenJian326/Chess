@@ -22,7 +22,7 @@ TouchManager * TouchManager::getIns()
 	return _ins;
 }
 
-void TouchManager::addTouchNode(Node *node,std::function<void()> func)
+void TouchManager::addTouchNode(Node *node, std::function<void()> func)
 {
 	_callBackFuncMap[node->getName()] = func;
 	auto listener = EventListenerTouchOneByOne::create();
@@ -41,11 +41,10 @@ bool TouchManager::onTouchBegan(Touch* touch, Event* event)
 {
 	bool isTouch = false;
 	auto touchNode = event->getCurrentTarget();
-	auto touchPoint = touchNode->getParent()->convertToNodeSpace(touch->getLocation());
-	if (touchNode->getBoundingBox().containsPoint(touchPoint)) {
-		isTouch = true;
-		CCLOG("%s %s", "onTouchBegan", Config::GBKToUTF8(touchNode->getName().c_str()));
-	}
+	Rect rect;
+	rect.size = touchNode->getContentSize();
+	auto camera = Camera::getVisitingCamera();
+	isTouch = isScreenPointInRect(touch->getLocation(), camera, touchNode->getWorldToNodeTransform(), rect, nullptr);
 	CCLOG("%s %s", "onTouchBegan", Config::GBKToUTF8(touchNode->getName().c_str()));
 	return isTouch;
 }
@@ -59,7 +58,7 @@ void TouchManager::onTouchEnded(Touch* touch, Event* event)
 {
 	auto touchNode = event->getCurrentTarget();
 	if (!touchNode->getBoundingBox().containsPoint(touchNode->getParent()->convertToNodeSpace(touch->getLocation()))) {
-		return ;
+		return;
 	}
 	if (!_callBackFuncMap.empty() && _callBackFuncMap[touchNode->getName()])
 	{

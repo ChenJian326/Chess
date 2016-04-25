@@ -19,8 +19,11 @@ private:
 	static std::vector<int> rightAi(int index);//往右边查看
 	static std::vector<int> topAi(int index);//往上查看
 	static std::vector<int> bottomAi(int index);//往下查看
+	static int changeDirection(int dir,int index);//遇到比自己大的逃跑
 	static std::vector<int> ai(int index,int key,int dir);
+	static bool inDepth(int index, int chessmanType, int dir);
 	static int _direction;
+	static std::vector<Node*> _allChessman;
 	static std::vector<int> _chessIndexs;
 };
 
