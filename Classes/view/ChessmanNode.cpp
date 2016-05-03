@@ -60,7 +60,7 @@ bool ChessmanNode::init()
 	colorLayer->setPosition(Vec2(2.5, 2.5));
 	this->addChild(colorLayer, 0, colorID);
 
-	auto label = Label::createWithSystemFont(Config::GetChessmanName(_chessmanType, _opponentType), "微软雅黑", 24);
+	auto label = Label::createWithSystemFont(Config::GetChessmanName(_chessmanType, _opponentType), GAME_FONE_NAME, 24);
 	label->setColor(cc3Pl);
 	label->setPosition(Vec2(Config::CHESS_SIZE::width * .5, Config::CHESS_SIZE::height * .5));
 	this->addChild(label, 0, labelID);
@@ -83,7 +83,7 @@ void ChessmanNode::onEnterTransitionDidFinish()
 			this->MoveOrSelect(false);
 		}
 	});
-	CCLOG("%s", Config::GBKToUTF8(this->getName().c_str()));
+	//	CCLOG("%s", Config::GBKTOUTF8(this->getName().c_str()));
 }
 
 void ChessmanNode::setChessStatus()
@@ -117,10 +117,10 @@ void ChessmanNode::setChessStatus()
 
 void ChessmanNode::MoveOrSelect(bool isPc)
 {
+	int currentMoveChessman = _gameManager->getSelectChessType(Config::TYPE_CHESS);
 	if (_isOpen)
 	{
 		int currentSelectChessman = _gameManager->getCurrentSelectChessman();
-		int currentMoveChessman = _gameManager->getSelectChessType(Config::TYPE_CHESS);
 		int selectChessOpponent = _gameManager->getSelectChessType(Config::TYPE_OPPONENT);
 		if (!isPc && currentMoveChessman == Config::nullChessman && _opponentType == Config::pc)
 		{
@@ -133,22 +133,25 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			this->setSelectStatus(true);
 			CCLOG("[MoveOrSelect 1]  _index = %d  _chessmanType = %d", _index, _chessmanType);
 		}
+		else if (_gameManager->getSelectChessIndex() == _index && currentMoveChessman == _chessmanType)
+		{
+			_gameManager->setCurrentMoveChessman(Config::nullChessman);
+			_gameManager->cancelSelectChess();
+			this->setSelectStatus(false);
+		}
 		else if (currentSelectChessman == Config::nullChessman && currentMoveChessman != Config::nullChessman)
 		{
-			if (_gameManager->isConnect(_index))
+			_gameManager->setCurrentSelectChessman(_chessmanType);
+			bool isEat = _gameManager->isEatOrMove(_opponentType, _index);
+			//		CCLOG("[MoveOrSelect 2]  _index = %d _chessmanType = %d", _index, _chessmanType);
+			if (isEat)
 			{
-				_gameManager->setCurrentSelectChessman(_chessmanType);
-				bool isEat = _gameManager->isEatOrMove(_opponentType);
-				//		CCLOG("[MoveOrSelect 2]  _index = %d _chessmanType = %d", _index, _chessmanType);
-				if (isEat)
-				{
-					_gameManager->pushMoveChessmens(this);
-					_gameManager->moveChessman(selectChessOpponent);
-				}
-				else {
-					//不能吃，不能走，重置这次的选择
-					_gameManager->setCurrentSelectChessman(Config::nullChessman);
-				}
+				_gameManager->pushMoveChessmens(this);
+				_gameManager->moveChessman(selectChessOpponent);
+			}
+			else {
+				//不能吃，不能走，重置这次的选择
+				_gameManager->setCurrentSelectChessman(Config::nullChessman);
 			}
 		}
 		else
@@ -157,7 +160,7 @@ void ChessmanNode::MoveOrSelect(bool isPc)
 			CCLOG("currentSelectChessman = %d _index = %d currentMoveChessman = %d", currentSelectChessman, _index, currentMoveChessman);
 		}
 	}
-	else
+	else if(currentMoveChessman < 0)
 	{
 		_isOpen = true;
 		this->getChildByTag(labelID)->setVisible(true);

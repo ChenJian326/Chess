@@ -1,5 +1,5 @@
-#include "DisplayTools.h"
-
+ï»¿#include "DisplayTools.h"
+#include "config\Config.h"
 DisplayTools::DisplayTools()
 {
 }
@@ -10,7 +10,7 @@ DisplayTools::~DisplayTools()
 
 Label * DisplayTools::createLabel(const char * str, int fontSize, Vec2 pos, Vec2 apos, Color3B color, TextVAlignment va, TextHAlignment ha)
 {
-	auto label = Label::createWithSystemFont(str,"Î¢ÈíÑÅºÚ",fontSize,Size::ZERO);
+	auto label = Label::createWithSystemFont(str, GAME_FONE_NAME,fontSize,Size::ZERO);
 	label->setColor(color);
 	label->setPosition(pos);
 	label->setAnchorPoint(apos);

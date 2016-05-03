@@ -46,7 +46,6 @@ int PcAi::startAi(int opponentType = Config::pc)
 		else if (_isInit)
 		{
 			_chessIndexs.push_back(node->getIndex());
-			//	CCLOG("_chessIndexs push index = %d", node->getIndex());
 		}
 	}
 	for (itr = _chessInfoMap.begin(); itr != _chessInfoMap.end(); itr++)
@@ -78,6 +77,7 @@ int PcAi::startAi(int opponentType = Config::pc)
 	}
 	//CCLOG("[startAi] index = %d ***** _direction = %d", index, _direction);
 	_isInit = false;
+	CCLOG("PcAi index = %d _direction = %d", index, _direction);
 	return index;
 }
 
@@ -88,6 +88,12 @@ void PcAi::initChessIndex()
 		_chessIndexs.erase(_chessIndexs.begin(), _chessIndexs.end());
 	}
 	_isInit = true;
+}
+
+void PcAi::reset()
+{
+	_chessIndexs.erase(_chessIndexs.begin(), _chessIndexs.end());
+	_allChessman.erase(_allChessman.begin(), _allChessman.end());
 }
 
 std::vector<int> PcAi::leftAi(int index)
@@ -120,7 +126,7 @@ std::vector<int> PcAi::bottomAi(int index)
 
 std::vector<int> PcAi::ai(int index, int key, int dir)
 {
-	int number = Config::zero;
+	int number = -9999;
 	std::vector<int> _dirs;
 	auto chessman = dynamic_cast<ChessmanNode*>(_allChessman.at(index));
 	for (int var = 0; var < key; var++)
@@ -143,17 +149,17 @@ std::vector<int> PcAi::ai(int index, int key, int dir)
 			//一个可以吃的棋子
 			else if (chessman->getChessmanType() <= node->getChessmanType() || (chessman->getChessmanType() == Config::soldiers && node->getChessmanType() == Config::handsome))
 			{
-				number = Config::seven - var;
+				number = Config::seven - var + 1;
 				break;
 			}
-			//如果遇到比自己大的
-			else if (chessman->getChessmanType() >= node->getChessmanType())
+			//如果遇到比自己大的  36计走位上计
+			else if (chessman->getChessmanType() > node->getChessmanType())
 			{
 				number = Config::zero;
 				auto var = PcAi::changeDirection(dir, index);
-				if (var != -1){
+				if (var != -1) {
 					dir = var;
-					number = Config::one;
+					number = Config::two;
 				}
 				break;
 			}
@@ -174,9 +180,10 @@ std::vector<int> PcAi::ai(int index, int key, int dir)
 	}
 	_dirs.push_back(dir);
 	_dirs.push_back(number);
+	CCLOG("number = %d dir = %d index = %d", number, dir, index);
 	return _dirs;
 }
-bool PcAi::inDepth(int index, int chessmanType, int dir)
+bool PcAi::inDepth(int index, int chessmanType, const int dir)
 {
 	bool isInDepth = false;
 	std::vector<int> dirVec = { Config::left,Config::right,Config::top,Config::botom };
@@ -204,28 +211,54 @@ bool PcAi::inDepth(int index, int chessmanType, int dir)
 	}
 	return isInDepth;
 }
-int PcAi::changeDirection(int dir, int index)
+int PcAi::changeDirection(const int dir, int index)
 {
 	int direction = -1;
 	std::vector<int> dirVec = { Config::left,Config::right,Config::top,Config::botom };
 	dirVec.erase(dirVec.begin() + dir);
 	for (unsigned int i = 0; i < dirVec.size(); i++)
 	{
-		int at = PcAi::getNextDirectionIndex(index, dirVec.at(i), 1);
-		if (at > 31 || at < 0)
+		if (isChangeDirection(dirVec.at(i), index))
 		{
-			break;
-		}
-		auto node = dynamic_cast<ChessmanNode*>(_allChessman.at(at));
-		if (node->getChessmanType() == Config::nullChessman)
-		{
-			direction = dirVec.at(i);
-			break;
+			int at = PcAi::getNextDirectionIndex(index, dirVec.at(i), 1);
+			if (at > 31 || at < 0)
+			{
+				break;
+			}
+			auto node = dynamic_cast<ChessmanNode*>(_allChessman.at(at));
+			if (node->getChessmanType() == Config::nullChessman)
+			{
+				direction = dirVec.at(i);
+				break;
+			}
 		}
 	}
 	//CCLOG("changeDirection direction = %d", direction);
 	return direction;
 }
+bool PcAi::isChangeDirection(const int dir, int index)
+{
+	int k = 0;
+	switch (dir)
+	{
+	case Config::left:
+		k = Config::column - (ceil((index + 1) / (float)Config::column) * Config::column - index);
+		break;
+	case Config::right:
+		k = ceil((index + 1) / (float)Config::column) * Config::column - index - 1;
+		break;
+	case Config::top:
+		k = Config::row - ceil((index + 1) / (float)Config::column);
+		break;
+	case Config::botom:
+		k = ceil((index + 1) / (float)Config::column) - 1;
+		break;
+	default:
+		break;
+	}
+	return k > 0;
+}
+
 int PcAi::clearOrFindChessIndex(int index, bool isFind)
 {
 	unsigned int length = _chessIndexs.size();

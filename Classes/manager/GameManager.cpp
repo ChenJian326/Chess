@@ -42,6 +42,7 @@ void GameManager::endGame(int opponentType)
 	_playerChessmans.erase(_playerChessmans.begin(), _playerChessmans.end());
 	_allChessmans.erase(_allChessmans.begin(), _allChessmans.end());
 	_moveChessmens.erase(_moveChessmens.begin(), _moveChessmens.end());
+	PcAi::reset();
 	TouchManager::getIns()->removeTouchs();//清除掉之前的touch function
 	EventManager::getIns()->dispatchEvent(EventManager::EVENT_GAME_END, nullptr);
 }
@@ -82,12 +83,12 @@ void GameManager::setCurrentOpponent(int value)
 		auto index = this->removeOrFindChess(PcAi::startAi(_currentOpponent));
 		if (PcAi::getDirection() == Config::nullChessman) {
 			dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->MoveOrSelect(true);
-			CCLOG("[setCurrentOpponent 1] <index = %d %d>", dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->getIndex(), index);
+			//CCLOG("[setCurrentOpponent 1] <index = %d %d>", dynamic_cast<ChessmanNode*>(_pcChessmans.at(index))->getIndex(), index);
 		}
 		else
 		{
 			auto chess1 = dynamic_cast<ChessmanNode*>(_pcChessmans.at(index));
-			//	CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
+			CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
 			chess1->MoveOrSelect(true);
 			int chessIndex = PcAi::getNextDirectionIndex(chess1->getIndex(), PcAi::getDirection(), 1);
 			unsigned int length = _allChessmans.size();
@@ -101,8 +102,8 @@ void GameManager::setCurrentOpponent(int value)
 					break;
 				}
 			}
-			//	CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex());
-			chess2->runAction(Sequence::create(DelayTime::create(0.8), CallFunc::create(
+			CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex());
+			chess2->runAction(Sequence::create(DelayTime::create(float(0.8)), CallFunc::create(
 				[=]() {
 				chess2->MoveOrSelect(true);
 			}
@@ -122,7 +123,7 @@ void GameManager::setCurrentMoveChessman(int chessmanType)
 	_currentMoveChessman = chessmanType;
 }
 
-bool GameManager::isEatOrMove(int opponentType)
+bool GameManager::isEatOrMove(int opponentType, int index)
 {
 	bool isEatOrMove = false;
 	if (_currentSelectChessman == Config::nullChessman)
@@ -147,7 +148,8 @@ bool GameManager::isEatOrMove(int opponentType)
 			}
 		}
 	}
-	return isEatOrMove;
+
+	return isEatOrMove && this->isConnect(index);
 }
 
 void GameManager::pushChessman(Node * node)
@@ -184,7 +186,15 @@ int GameManager::getSelectChessType(int type)
 	}
 	return t;
 }
-
+int GameManager::getSelectChessIndex()
+{
+	int index = -999999;
+	if (!_moveChessmens.empty() && _moveChessmens.size() > 0)
+	{
+		index = dynamic_cast<ChessmanNode*>(_moveChessmens.at(0))->getIndex();
+	}
+	return index;
+}
 std::vector<Node*> GameManager::getChessmans(int opponentType)
 {
 	if (opponentType == Config::pc) {
@@ -260,9 +270,15 @@ bool GameManager::isConnect(int index)
 {
 	bool isConnect = false;
 	int chessIndex = dynamic_cast<ChessmanNode*>(_moveChessmens.at(0))->getIndex();
-	if (chessIndex + 1 == index || chessIndex - 1 == index || chessIndex + 8 == index || chessIndex - 8 == index)
+	int row1 = ceil((chessIndex + 1) / (float)Config::column);
+	int row2 = ceil((index + 1) / (float)Config::column);
+	if (row1 == row2)
 	{
-		isConnect = true;
+		isConnect = chessIndex + 1 == index || chessIndex - 1 == index;
+	}
+	else
+	{
+		isConnect = chessIndex + 8 == index || chessIndex - 8 == index;
 	}
 	return isConnect;
 }

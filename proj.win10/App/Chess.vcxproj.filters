@@ -14,6 +14,24 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{a18967bc-4fa1-4c67-bf7e-3f9c8b6a1129}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\view">
+      <UniqueIdentifier>{cf88d725-b464-49be-8f76-62ce6e24c7f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\tips">
+      <UniqueIdentifier>{6aeb9c0f-f540-4721-8755-944fa1a021ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\manager">
+      <UniqueIdentifier>{3afd2d63-33c4-4b80-bc62-87c124696ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\ai">
+      <UniqueIdentifier>{56d2e63c-bcd6-436e-9499-f69567f1e972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\config">
+      <UniqueIdentifier>{39eb0508-ee71-4f9d-919a-fd5b7204b3c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\scene">
+      <UniqueIdentifier>{4e6e8e04-c4b7-43cb-ba58-02032947882c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -31,8 +49,53 @@
     <ClCompile Include="..\..\Classes\AppDelegate.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Classes\HelloWorldScene.cpp">
+    <ClCompile Include="..\..\Classes\MainScene.cpp">
       <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\view\ChessmanNode.cpp">
+      <Filter>Classes\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\view\GameEndNode.cpp">
+      <Filter>Classes\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\view\GameInfoNode.cpp">
+      <Filter>Classes\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\view\GameMap.cpp">
+      <Filter>Classes\view</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\tips\TipsManager.cpp">
+      <Filter>Classes\tips</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\manager\EventManager.cpp">
+      <Filter>Classes\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\manager\GameManager.cpp">
+      <Filter>Classes\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\manager\TouchManager.cpp">
+      <Filter>Classes\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\ai\PcAi.cpp">
+      <Filter>Classes\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\config\Config.cpp">
+      <Filter>Classes\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\config\DisplayTools.cpp">
+      <Filter>Classes\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\config\VisibleRect.cpp">
+      <Filter>Classes\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\scene\GameEndScene.cpp">
+      <Filter>Classes\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\scene\GameScene.cpp">
+      <Filter>Classes\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\config\ChineseCode.cpp">
+      <Filter>Classes\config</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,8 +111,53 @@
     <ClInclude Include="..\..\Classes\AppDelegate.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Classes\HelloWorldScene.h">
+    <ClInclude Include="..\..\Classes\MainScene.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\view\ChessmanNode.h">
+      <Filter>Classes\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\view\GameEndNode.h">
+      <Filter>Classes\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\view\GameInfoNode.h">
+      <Filter>Classes\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\view\GameMap.h">
+      <Filter>Classes\view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\tips\TipsManager.h">
+      <Filter>Classes\tips</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\manager\EventManager.h">
+      <Filter>Classes\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\manager\GameManager.h">
+      <Filter>Classes\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\manager\TouchManager.h">
+      <Filter>Classes\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\ai\PcAi.h">
+      <Filter>Classes\ai</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\config\Config.h">
+      <Filter>Classes\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\config\DisplayTools.h">
+      <Filter>Classes\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\config\VisibleRect.h">
+      <Filter>Classes\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\scene\GameEndScene.h">
+      <Filter>Classes\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\scene\GameScene.h">
+      <Filter>Classes\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\config\ChineseCode.h">
+      <Filter>Classes\config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

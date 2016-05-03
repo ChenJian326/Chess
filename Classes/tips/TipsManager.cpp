@@ -10,7 +10,7 @@ TipsManager::~TipsManager()
 
 void TipsManager::showTips(const char* str, int fontSzie, Color3B color, float time)
 {
-	auto label = Label::createWithSystemFont(Config::GBKToUTF8(str), "Î¢ÈíÑÅºÚ", fontSzie);
+	auto label = Label::createWithSystemFont(Config::GBKTOUTF8(str), GAME_FONE_NAME, fontSzie);
 	label->setColor(color);
 	label->setPosition(Vec2(VisibleRect::center().x, VisibleRect::center().y + 100));
 	label->setCascadeOpacityEnabled(true);

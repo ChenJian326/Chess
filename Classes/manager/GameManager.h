@@ -20,14 +20,14 @@ public:
 	void moveChessman(int opponentType);
 	void pushChessman(Node* node);
 	void pushMoveChessmens(Node* node);
-	bool isEatOrMove(int opponentType);
-	bool isConnect(int index);
+	bool isEatOrMove(int opponentType, int index);
 	void cancelSelectChess();
 	int removeOrFindChess(int index, bool isRemove = false, int opponentType = Config::pc);
 	int getCurrentOpponent() { return _currentOpponent; };
 	int getCurrentSelectChessman() { return _currentSelectChessman; };
 	int getCurrentMoveChessman() { return _currentMoveChessman; };
 	int getSelectChessType(int type);
+	int getSelectChessIndex();
 	int getWinType() { return _winType; };
 	std::vector<Node*> getChessmans(int opponentType);
 	std::vector<Node*> getAllChessmans() { return _allChessmans; };
@@ -41,5 +41,6 @@ private:
 	std::vector<Node*> _allChessmans;
 	std::vector<Node*> _moveChessmens;
 	Director *_director;
+	bool isConnect(int index);
 };
 #endif

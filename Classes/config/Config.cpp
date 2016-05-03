@@ -1,5 +1,4 @@
 #include "Config.h"
-
 Config::Config()
 {
 }
@@ -8,9 +7,9 @@ Config::~Config()
 {
 }
 static char g_GBKConvUTF8Buf[500000];
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
 const char * Config::GBKToUTF8(const char * strChar)
 {
-	//char g_GBKConvUTF8Buf[50000];
 	iconv_t iconvH;
 	iconvH = iconv_open("utf-8", "gb2312");
 	if (iconvH == 0)
@@ -20,7 +19,7 @@ const char * Config::GBKToUTF8(const char * strChar)
 	size_t strLength = strlen(strChar);
 	size_t outLength = strLength << 2;
 	size_t copyLength = outLength;
-	memset(g_GBKConvUTF8Buf, 0, 5000);
+	memset(g_GBKConvUTF8Buf, 0, 500000);
 
 	char* outbuf = (char*)malloc(outLength);
 	char* pBuff = outbuf;
@@ -34,6 +33,25 @@ const char * Config::GBKToUTF8(const char * strChar)
 	memcpy(g_GBKConvUTF8Buf, pBuff, copyLength);
 	free(pBuff);
 	iconv_close(iconvH);
+	return g_GBKConvUTF8Buf;
+}
+#else
+#endif 
+const char* Config::WinGBKToUTF8(const char *strGB2312)
+{
+	memset(g_GBKConvUTF8Buf, 0, 500000);
+	int len = MultiByteToWideChar(0, 0, strGB2312, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len + 1];
+	memset(wstr, 0, len + 1);
+	MultiByteToWideChar(0, 0, strGB2312, -1, wstr, len);
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+	char* str = new char[len + 1];
+	memset(str, 0, len + 1);
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+	memcpy(g_GBKConvUTF8Buf, str, len);
+	if (wstr) delete[] wstr;
+	if (str) delete[] str;
+	//CCLOG("g_GBKConvUTF8Buf = %s strGB2312 = %s", g_GBKConvUTF8Buf, strGB2312);
 	return g_GBKConvUTF8Buf;
 }
 
@@ -67,5 +85,5 @@ const char * Config::GetChessmanName(int value, int opponetType)
 		str = opponetType == pc ? "±ø" : "×ä";
 		break;
 	}
-	return GBKToUTF8(str);
+	return GBKTOUTF8(str);
 }

@@ -23,11 +23,11 @@ bool GameEndNode::init()
 	Label *lb;
 	if (_winType == Config::pc)
 	{
-		lb = DisplayTools::createLabel(Config::GBKToUTF8("人类你们弱爆了，可有本事再战一局！"),16,Vec2(VisibleRect::center().x, VisibleRect::center().y + 30));
+		lb = DisplayTools::createLabel(Config::GBKTOUTF8("人类你们弱爆了，可有本事再战一局！"),16,Vec2(VisibleRect::center().x, VisibleRect::center().y + 30));
 	}
 	else
 	{
-		lb = DisplayTools::createLabel(Config::GBKToUTF8("不是听说你PC会深度学习吗，怎么还是这个鬼样，可有本事再战一局！"), 16, Vec2(VisibleRect::center().x, VisibleRect::center().y + 30));
+		lb = DisplayTools::createLabel(Config::GBKTOUTF8("不是听说你PC会深度学习吗，怎么还是这个鬼样，可有本事再战一局！"), 16, Vec2(VisibleRect::center().x, VisibleRect::center().y + 30));
 	}
 	auto startBtn = MenuItemFont::create("continue game", CC_CALLBACK_1(GameEndNode::continueGame, this));
 	auto exitBtn = MenuItemFont::create("exit game", CC_CALLBACK_1(GameEndNode::exitGame, this));

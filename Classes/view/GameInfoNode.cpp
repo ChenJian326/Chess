@@ -25,8 +25,8 @@ bool GameInfoNode::init()
 	int spacing = visiSize.height * 0.08;
 
 	_countdownLb = DisplayTools::createLabel("00:00:00", 22, Vec2(60, visiSize.height - 30), Vec2(0, 0));
-	_pcInfo = DisplayTools::createLabel(Config::GBKToUTF8("PC：红色棋子"), 18, Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(1, 0));
-	_playerInfo = DisplayTools::createLabel(Config::GBKToUTF8("player：黑色棋子"), 18, Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(0, 0));
+	_pcInfo = DisplayTools::createLabel(Config::GBKTOUTF8("PC：红色棋子"), 18, Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(1, 0));
+	_playerInfo = DisplayTools::createLabel(Config::GBKTOUTF8("player：黑色棋子"), 18, Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(0, 0));
 	_currentInfo = DisplayTools::createLabel("", 18, Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing), Vec2(0.5, 0));
 	_pcScore = DisplayTools::createLabel("pc:0", 18, Vec2(VisibleRect::left().x + 80, visiSize.height - 70), Vec2(0, 0));
 	_playerScore = DisplayTools::createLabel("player:0", 18, Vec2(VisibleRect::right().x - 150, visiSize.height - 70), Vec2(0, 0));
@@ -48,14 +48,14 @@ bool GameInfoNode::init()
 			_isShowTips = true;
 			this->showCountdown(0.0);
 			this->schedule(CC_SCHEDULE_SELECTOR(GameInfoNode::showCountdown), 1);
-			_currentInfo->setString(Config::GBKToUTF8("当前下棋：玩家"));
+			_currentInfo->setString(Config::GBKTOUTF8("当前下棋：玩家"));
 		}
 		else
 		{
 			_countdown = 1;
 			_isShowTips = false;
 			this->showCountdown(0.0);
-			_currentInfo->setString(Config::GBKToUTF8("当前下棋：PC"));
+			_currentInfo->setString(Config::GBKTOUTF8("当前下棋：PC"));
 		}
 	}, this);
 

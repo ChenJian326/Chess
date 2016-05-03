@@ -45,7 +45,7 @@ bool TouchManager::onTouchBegan(Touch* touch, Event* event)
 	rect.size = touchNode->getContentSize();
 	auto camera = Camera::getVisitingCamera();
 	isTouch = isScreenPointInRect(touch->getLocation(), camera, touchNode->getWorldToNodeTransform(), rect, nullptr);
-	CCLOG("%s %s", "onTouchBegan", Config::GBKToUTF8(touchNode->getName().c_str()));
+	//CCLOG("%s %s", "onTouchBegan", Config::GBKTOUTF8(touchNode->getName().c_str()));
 	return isTouch;
 }
 
