@@ -1,7 +1,7 @@
 # Chess
 暗棋游戏
 
-使用cocos2d-x 3.10 c++开发 如果需要运行需要自己新建一个cocos c++项目，把chess的代码copy过去就行了
+使用cocos2d-x 3.10 c++开发 如果需要运行需要自己新建一个cocos c++项目，把classes的代码copy过去就行了
 
 
 差不多是一个完整的游戏吧，
