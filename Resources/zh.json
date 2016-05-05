@@ -1,0 +1,10 @@
+{
+  "classname": "帅",
+  "text": "关于",
+  "name": null,
+  "animation": {
+    "classname": null,
+    "name": "AnimationManager",
+    "actionlist": []
+  }
+}
