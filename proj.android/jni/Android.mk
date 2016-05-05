@@ -46,7 +46,7 @@ LOCAL_STATIC_LIBRARIES := cocos2dx_static  \
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,.)
-$(call import-module,android/support)
+$(call import-module,android/support)#添加android iconv库
 
 # _COCOS_LIB_IMPORT_ANDROID_BEGIN
 # _COCOS_LIB_IMPORT_ANDROID_END
