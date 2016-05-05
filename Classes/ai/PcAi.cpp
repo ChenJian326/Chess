@@ -16,7 +16,6 @@ bool cmp_by_value(const PAIR& lhs, const PAIR& rhs) {
 
 PcAi::PcAi()
 {
-	CCLOG("");
 }
 
 PcAi::~PcAi()

@@ -7,8 +7,7 @@ Config::~Config()
 {
 }
 static char g_GBKConvUTF8Buf[500000];
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
-const char * Config::GBKToUTF8(const char * strChar)
+const char * Config::GBKToUTF8(const char* strChar)
 {
 	iconv_t iconvH;
 	iconvH = iconv_open("utf-8", "gb2312");
@@ -24,19 +23,27 @@ const char * Config::GBKToUTF8(const char * strChar)
 	char* outbuf = (char*)malloc(outLength);
 	char* pBuff = outbuf;
 	memset(outbuf, 0, outLength);
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	char* iconvChar = (char*)malloc(strLength);
+	memcpy(iconvChar, strChar, strLength);
+	if (-1 == iconv(iconvH, &iconvChar, &strLength, &outbuf, &outLength))
+	{
+		iconv_close(iconvH);
+		return NULL;
+	}
+#else
 	if (-1 == iconv(iconvH, &strChar, &strLength, &outbuf, &outLength))
 	{
 		iconv_close(iconvH);
 		return NULL;
 	}
+#endif
 	memcpy(g_GBKConvUTF8Buf, pBuff, copyLength);
 	free(pBuff);
 	iconv_close(iconvH);
 	return g_GBKConvUTF8Buf;
 }
-#else
-#endif 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) 
 const char* Config::WinGBKToUTF8(const char *strGB2312)
 {
 	memset(g_GBKConvUTF8Buf, 0, 500000);
@@ -51,13 +58,13 @@ const char* Config::WinGBKToUTF8(const char *strGB2312)
 	memcpy(g_GBKConvUTF8Buf, str, len);
 	if (wstr) delete[] wstr;
 	if (str) delete[] str;
-	//CCLOG("g_GBKConvUTF8Buf = %s strGB2312 = %s", g_GBKConvUTF8Buf, strGB2312);
+	CCLOG("g_GBKConvUTF8Buf = %s strGB2312 = %s", g_GBKConvUTF8Buf, strGB2312);
 	return g_GBKConvUTF8Buf;
 }
-
+#endif
 const char * Config::GetChessmanName(int value, int opponetType)
 {
-	char *str;
+	const char *str;
 	switch (value)
 	{
 	case handsome:

@@ -1,22 +1,23 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
+#include <string>
+#include "cocos2d.h"
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
 #include "cocos2d\external\win32-specific\icon\include\iconv.h"
-#else
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) 
+#include "iconv.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) 
+#include <iconv.h>
 #endif 
 #define GBKTOUTF8 GBKToUTF8
 #define GAME_FONE_NAME ""
-#include <string>
-#if defined(_WIN32) && defined(_WINDOWS)
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) 
 #undef  GBKTOUTF8
 #define GBKTOUTF8 WinGBKToUTF8
 #endif
 
-#if defined(WINRT)
-#undef  GBKTOUTF8
-#define GBKTOUTF8 WinGBKToUTF8
-#endif
-#include "cocos2d.h"
 class Config
 {
 public:

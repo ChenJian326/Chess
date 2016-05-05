@@ -24,12 +24,12 @@ bool GameInfoNode::init()
 	auto visiSize = Director::getInstance()->getVisibleSize();
 	int spacing = visiSize.height * 0.08;
 
-	_countdownLb = DisplayTools::createLabel("00:00:00", 22, Vec2(60, visiSize.height - 30), Vec2(0, 0));
+	_countdownLb = DisplayTools::createLabel("00:00:00", 22, Vec2(60, visiSize.height - 20), Vec2(0, 0));
 	_pcInfo = DisplayTools::createLabel(Config::GBKTOUTF8("PC：红色棋子"), 18, Vec2(VisibleRect::rightBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(1, 0));
 	_playerInfo = DisplayTools::createLabel(Config::GBKTOUTF8("player：黑色棋子"), 18, Vec2(VisibleRect::leftBottom().x, VisibleRect::leftBottom().y + spacing), Vec2(0, 0));
 	_currentInfo = DisplayTools::createLabel("", 18, Vec2(VisibleRect::center().x, VisibleRect::leftBottom().y + spacing), Vec2(0.5, 0));
-	_pcScore = DisplayTools::createLabel("pc:0", 18, Vec2(VisibleRect::left().x + 80, visiSize.height - 70), Vec2(0, 0));
-	_playerScore = DisplayTools::createLabel("player:0", 18, Vec2(VisibleRect::right().x - 150, visiSize.height - 70), Vec2(0, 0));
+	_pcScore = DisplayTools::createLabel("pc:0", 18, Vec2(VisibleRect::left().x + 80, visiSize.height - 35), Vec2(0, 0));
+	_playerScore = DisplayTools::createLabel("player:0", 18, Vec2(VisibleRect::right().x - 150, visiSize.height - 35), Vec2(0, 0));
 
 	this->addChild(_countdownLb);
 	this->addChild(_pcInfo);
