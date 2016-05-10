@@ -23,7 +23,7 @@ private:
 	static int changeDirection(const int dir,int index);//遇到比自己大的逃跑
 	static bool isChangeDirection(const int dir, int index);//遇到比自己大的逃跑
 	static std::vector<int> ai(int index,int key, int dir);
-	static bool inDepth(int index, int chessmanType, const int dir);
+	static bool inDepth(int index, const int chessmanType, const int opponentType, const int dir);
 	static int _direction;
 	static std::vector<Node*> _allChessman;
 	static std::vector<int> _chessIndexs;

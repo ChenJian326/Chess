@@ -66,7 +66,7 @@ void GameManager::checkIsEndGame(int opponentType)
 	{
 		//修改下一个下棋的人
 		setCurrentOpponent(opponentType == Config::pc ? Config::player : Config::pc);
-		CCLOG("Keep it up game pcSize = %d  playerSize = %d", pcSize, playerSize);
+	//	CCLOG("Keep it up game pcSize = %d  playerSize = %d", pcSize, playerSize);
 	}
 	EventManager::getIns()->dispatchEvent(EventManager::EVENT_UPDATE_SCORE, &datas);
 }
@@ -88,7 +88,7 @@ void GameManager::setCurrentOpponent(int value)
 		else
 		{
 			auto chess1 = dynamic_cast<ChessmanNode*>(_pcChessmans.at(index));
-			CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
+			//CCLOG("[setCurrentOpponent 2] <index1 = %d index = %d getChessmanType = %d>", chess1->getIndex(), index, chess1->getChessmanType());
 			chess1->MoveOrSelect(true);
 			int chessIndex = PcAi::getNextDirectionIndex(chess1->getIndex(), PcAi::getDirection(), 1);
 			unsigned int length = _allChessmans.size();
@@ -102,13 +102,12 @@ void GameManager::setCurrentOpponent(int value)
 					break;
 				}
 			}
-			CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex());
-			chess2->runAction(Sequence::create(DelayTime::create(float(0.8)), CallFunc::create(
+			CCLOG("[setCurrentOpponent 3] <index1 = %d chessmanType1 = %d index2 = %d chessmanType1 = %d>", chess1->getIndex(), chess1->getChessmanType(), chess2->getIndex(), chess2->getChessmanType());
+			chess2->runAction(Sequence::create(DelayTime::create(0.8f), CallFunc::create(
 				[=]() {
 				chess2->MoveOrSelect(true);
 			}
 			), nullptr));
-
 		}
 	}
 }
@@ -167,8 +166,6 @@ void GameManager::pushChessman(Node * node)
 		_allChessmans.push_back(node);
 	}
 }
-
-
 
 int GameManager::getSelectChessType(int type)
 {

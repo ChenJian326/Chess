@@ -31,7 +31,7 @@ bool GameScene::init()
 	//需要等一会里面的事件才会生效
 	auto infoPanel = GameInfoNode::create();
 	this->addChild(infoPanel);
-	this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::showMap),0.05);
+	this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::showMap),0.05f);
 	EventManager::getIns()->addEventListener(EventManager::EVENT_UPDATE_SCORE, "", [=](EventCustom* event) {
 		auto userData = static_cast<std::vector<int>*>(event->getUserData());
 		int pcSize = userData->at(0);

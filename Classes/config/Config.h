@@ -9,13 +9,17 @@
 #include "iconv.h"
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) 
 #include <iconv.h>
-#endif 
+#endif
+
 #define GBKTOUTF8 GBKToUTF8
 #define GAME_FONE_NAME ""
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) 
 #undef  GBKTOUTF8
+#undef  GAME_FONE_NAME
 #define GBKTOUTF8 WinGBKToUTF8
+#define GAME_FONE_NAME "Microsoft YaHei"  //win10需要设置支持中文的字体才可以哦
+//请参考https://blogs.msdn.microsoft.com/windows__windows_game_dev_faq_/2014/11/06/ttf-cocos2dx-wp8/
 #endif
 
 class Config

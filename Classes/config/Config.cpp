@@ -6,7 +6,10 @@ Config::Config()
 Config::~Config()
 {
 }
+
+
 static char g_GBKConvUTF8Buf[500000];
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
 const char * Config::GBKToUTF8(const char* strChar)
 {
 	iconv_t iconvH;
@@ -19,18 +22,18 @@ const char * Config::GBKToUTF8(const char* strChar)
 	size_t outLength = strLength << 2;
 	size_t copyLength = outLength;
 	memset(g_GBKConvUTF8Buf, 0, 500000);
-
 	char* outbuf = (char*)malloc(outLength);
 	char* pBuff = outbuf;
 	memset(outbuf, 0, outLength);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-	char* iconvChar = (char*)malloc(strLength);
+	char *iconvChar = (char*)malloc(strLength);
 	memcpy(iconvChar, strChar, strLength);
 	if (-1 == iconv(iconvH, &iconvChar, &strLength, &outbuf, &outLength))
 	{
 		iconv_close(iconvH);
 		return NULL;
 	}
+	free(iconvChar);
 #else
 	if (-1 == iconv(iconvH, &strChar, &strLength, &outbuf, &outLength))
 	{
@@ -43,22 +46,23 @@ const char * Config::GBKToUTF8(const char* strChar)
 	iconv_close(iconvH);
 	return g_GBKConvUTF8Buf;
 }
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) 
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) 
 const char* Config::WinGBKToUTF8(const char *strGB2312)
 {
 	memset(g_GBKConvUTF8Buf, 0, 500000);
-	int len = MultiByteToWideChar(0, 0, strGB2312, -1, NULL, 0);
+	int len = MultiByteToWideChar(CP_ACP, 0, strGB2312, -1, nullptr, 0);
 	wchar_t* wstr = new wchar_t[len + 1];
 	memset(wstr, 0, len + 1);
-	MultiByteToWideChar(0, 0, strGB2312, -1, wstr, len);
-	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-	char* str = new char[len + 1];
-	memset(str, 0, len + 1);
-	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+	MultiByteToWideChar(CP_ACP, 0, strGB2312, -1, wstr, len);
+
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
+	char* str = new char[len];
+	memset(str, 0, len);
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len + 1, nullptr, nullptr);
 	memcpy(g_GBKConvUTF8Buf, str, len);
 	if (wstr) delete[] wstr;
 	if (str) delete[] str;
-	CCLOG("g_GBKConvUTF8Buf = %s strGB2312 = %s", g_GBKConvUTF8Buf, strGB2312);
 	return g_GBKConvUTF8Buf;
 }
 #endif
@@ -74,7 +78,7 @@ const char * Config::GetChessmanName(int value, int opponetType)
 		str = "仕";
 		break;
 	case phase:
-		str = "相";
+		str = opponetType == pc ? "象" : "相";
 		break;
 	case horse:
 		str = "马";

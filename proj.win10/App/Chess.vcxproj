@@ -220,7 +220,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Classes\ai\PcAi.h" />
     <ClInclude Include="..\..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\..\Classes\config\ChineseCode.h" />
     <ClInclude Include="..\..\Classes\config\Config.h" />
     <ClInclude Include="..\..\Classes\config\DisplayTools.h" />
     <ClInclude Include="..\..\Classes\config\VisibleRect.h" />
@@ -259,7 +258,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\Classes\ai\PcAi.cpp" />
     <ClCompile Include="..\..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\..\Classes\config\ChineseCode.cpp" />
     <ClCompile Include="..\..\Classes\config\Config.cpp" />
     <ClCompile Include="..\..\Classes\config\DisplayTools.cpp" />
     <ClCompile Include="..\..\Classes\config\VisibleRect.cpp" />

@@ -1,6 +1,8 @@
 #include "ChessmanNode.h"
 #include "tips\TipsManager.h"
 #include "ui\UIRichText.h"
+#include "config\DisplayTools.h"
+
 ChessmanNode::ChessmanNode()
 	:_opponentType(0),
 	_chessmanType(0),
@@ -60,13 +62,11 @@ bool ChessmanNode::init()
 	colorLayer->setPosition(Vec2(2.5, 2.5));
 	this->addChild(colorLayer, 0, colorID);
 
-	auto label = Label::createWithSystemFont(Config::GetChessmanName(_chessmanType, _opponentType), GAME_FONE_NAME, 24);
+	auto label = DisplayTools::createLabel(Config::GetChessmanName(_chessmanType, _opponentType), 24, Vec2(Config::CHESS_SIZE::width * .5, Config::CHESS_SIZE::height * .5));
 	label->setColor(cc3Pl);
-	label->setPosition(Vec2(Config::CHESS_SIZE::width * .5, Config::CHESS_SIZE::height * .5));
 	this->addChild(label, 0, labelID);
 	this->setContentSize(Size(Config::CHESS_SIZE::width, Config::CHESS_SIZE::height));
 	this->setCascadeOpacityEnabled(true);
-	//this->setOnEnterCallback();
 	return true;
 }
 
@@ -178,7 +178,7 @@ void ChessmanNode::setSelectStatus(bool isSelect)
 {
 	if (isSelect)
 	{
-		this->runAction(RepeatForever::create(Sequence::create(FadeOut::create(0.4), FadeIn::create(0.4), nullptr)));
+		this->runAction(RepeatForever::create(Sequence::create(FadeOut::create(0.4f), FadeIn::create(0.4f), nullptr)));
 	}
 	else
 	{

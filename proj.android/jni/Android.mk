@@ -18,7 +18,7 @@ endef
 # 遍历Classes目录  
 ALLFILES = $(call walk, $(LOCAL_PATH)/../../Classes)  
 
-#$(info $(ALLFILES))  #用来打印信息# 
+$(info $(ALLFILES))  #用来打印信息# 
 
 FILE_LIST := hellocpp/main.cpp  
 # 从所有文件中提取出所有.cpp文件  

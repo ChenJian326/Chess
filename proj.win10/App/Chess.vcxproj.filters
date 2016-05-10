@@ -94,9 +94,6 @@
     <ClCompile Include="..\..\Classes\scene\GameScene.cpp">
       <Filter>Classes\scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Classes\config\ChineseCode.cpp">
-      <Filter>Classes\config</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.xaml.h" />
@@ -155,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Classes\scene\GameScene.h">
       <Filter>Classes\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Classes\config\ChineseCode.h">
-      <Filter>Classes\config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

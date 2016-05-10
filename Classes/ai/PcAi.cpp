@@ -58,25 +58,20 @@ int PcAi::startAi(int opponentType = Config::pc)
 	}
 	std::sort(_chessSortVec.begin(), _chessSortVec.end(), cmp_by_value);
 
-	if (_chessIndexs.size() == vec.size())
+	//如果没有可以行动的棋子
+	if (_chessSortVec.size() <= 0 || (_chessSortVec.at(0).begin()->second.at(1) <= 0 && _chessIndexs.size() > 0))
 	{
-		index = _chessIndexs.at(random(0, (int)_chessIndexs.size() - 1));
+		auto at = random(0, (int)_chessIndexs.size() - 1);
+		index = _chessIndexs.at(at);
+		_chessIndexs.erase(_chessIndexs.begin() + at);
 	}
 	else
-	{	//如果没有可以行动的棋子
-		if (_chessSortVec.at(0).begin()->second.at(1) <= 0)
-		{
-			index = _chessIndexs.at(random(0, (int)_chessIndexs.size() - 1));
-		}
-		else
-		{
-			index = _chessSortVec.at(0).begin()->first;
-			_direction = _chessSortVec.at(0).begin()->second.at(0);
-		}
+	{
+		index = _chessSortVec.at(0).begin()->first;
+		_direction = _chessSortVec.at(0).begin()->second.at(0);
 	}
-	//CCLOG("[startAi] index = %d ***** _direction = %d", index, _direction);
+	CCLOG("[startAi] index = %d ***** _direction = %d", index, _direction);
 	_isInit = false;
-	CCLOG("PcAi index = %d _direction = %d", index, _direction);
 	return index;
 }
 
@@ -125,56 +120,45 @@ std::vector<int> PcAi::bottomAi(int index)
 
 std::vector<int> PcAi::ai(int index, int key, int dir)
 {
-	int number = -9999;
+	int number = -1;
 	std::vector<int> _dirs;
 	auto chessman = dynamic_cast<ChessmanNode*>(_allChessman.at(index));
 	for (int var = 0; var < key; var++)
 	{
 		int at = PcAi::getNextDirectionIndex(index, dir, var + 1);
 		auto node = dynamic_cast<ChessmanNode*>(_allChessman.at(at));
-		if (!node->isOpen())
+		bool isSoldiersEatHandsome = chessman->getChessmanType() == Config::soldiers && node->getChessmanType() == Config::handsome;
+		if (node->isOpen() && node->getOpponentType() != chessman->getOpponentType())
 		{
-			number = -1;
-			break;
-		}
-		else
-		{
-			//两个棋子类型相同
-			if (node->getOpponentType() == chessman->getOpponentType())
+			if (chessman->getChessmanType() <= node->getChessmanType() || isSoldiersEatHandsome)
 			{
-				number = -1;
-				break;
-			}
-			//一个可以吃的棋子
-			else if (chessman->getChessmanType() <= node->getChessmanType() || (chessman->getChessmanType() == Config::soldiers && node->getChessmanType() == Config::handsome))
-			{
-				number = Config::seven - var + 1;
+				number = Config::seven;
 				break;
 			}
 			//如果遇到比自己大的  36计走位上计
-			else if (chessman->getChessmanType() > node->getChessmanType())
+			else if ((node->getChessmanType() >= 0 && chessman->getChessmanType() > node->getChessmanType()) && !isSoldiersEatHandsome)
 			{
-				number = Config::zero;
-				auto var = PcAi::changeDirection(dir, index);
-				if (var != -1) {
-					dir = var;
+				number = -1;
+				auto direction = PcAi::changeDirection(dir, index);
+				if (direction != -1) {
+					dir = direction;
 					number = Config::two;
 				}
 				break;
-			}
-			else
+			}//寻找其余两个个方向可以吃
+			else if (PcAi::inDepth(at, chessman->getOpponentType(),chessman->getChessmanType(), dir))
 			{
-				//寻找其余两个个方向可以吃的
-				if (PcAi::inDepth(at, chessman->getChessmanType(), dir))
-				{
-					number = Config::five - var;
-				}
-				//如果下一个棋子是无效的棋子
-				else if (node->getChessmanType() == Config::nullChessman)
-				{
-					number = Config::zero;
-				}
+				number = Config::five;
 			}
+			//如果下一个棋子是无效的棋子
+			else if (_chessIndexs.size() <= 0 && node->getChessmanType() == Config::nullChessman)
+			{
+				number = Config::zero;
+			}
+		}
+		else
+		{
+			break;
 		}
 	}
 	_dirs.push_back(dir);
@@ -182,13 +166,13 @@ std::vector<int> PcAi::ai(int index, int key, int dir)
 	CCLOG("number = %d dir = %d index = %d", number, dir, index);
 	return _dirs;
 }
-bool PcAi::inDepth(int index, int chessmanType, const int dir)
+bool PcAi::inDepth(int index, const int chessmanType, const int opponentType, const int dir)
 {
 	bool isInDepth = false;
 	std::vector<int> dirVec = { Config::left,Config::right,Config::top,Config::botom };
 	if (dir == Config::left || dir == Config::right)
 	{
-		dirVec.erase(dirVec.begin(), dirVec.begin() + 1);
+		dirVec.erase(dirVec.begin(), dirVec.begin() + 2);
 	}
 	else
 	{
@@ -202,6 +186,10 @@ bool PcAi::inDepth(int index, int chessmanType, const int dir)
 			break;
 		}
 		auto node = dynamic_cast<ChessmanNode*>(_allChessman.at(at));
+		if (!node->isOpen() || node->getOpponentType() == opponentType || node->getChessmanType() == Config::nullChessman)
+		{
+			break;
+		}
 		if (chessmanType <= node->getChessmanType() || (chessmanType == Config::soldiers && node->getChessmanType() == Config::handsome))
 		{
 			isInDepth = true;
@@ -232,7 +220,7 @@ int PcAi::changeDirection(const int dir, int index)
 			}
 		}
 	}
-	//CCLOG("changeDirection direction = %d", direction);
+	CCLOG("changeDirection direction = %d", direction);
 	return direction;
 }
 bool PcAi::isChangeDirection(const int dir, int index)

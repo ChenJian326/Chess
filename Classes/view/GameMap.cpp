@@ -56,14 +56,14 @@ bool GameMap::init()
 	{
 		auto line = DrawNode::create();
 		line->setLineWidth(5);
-		line->drawLine(Vec2(0.0, i * space), Vec2(Config::MAP_SIZE::w, i * space), Color4F(0.5, 0.5, 0.2, 1));
+		line->drawLine(Vec2(0.0f, float(i * space)), Vec2(Config::MAP_SIZE::w, i * space), Color4F(0.5f, 0.5f, 0.2f, 1.0f));
 		lineNode->addChild(line);
 	}
 	for (j = 0; j < Config::MAP_SIZE::column + 1; j++)
 	{
 		auto line = DrawNode::create();
 		line->setLineWidth(5);
-		line->drawLine(Vec2(j * space, 0.0), Vec2(j * space, Config::MAP_SIZE::h), Color4F(0.5, 0.5, 0.2, 1));
+		line->drawLine(Vec2(j * space, 0.0f), Vec2(j * space, Config::MAP_SIZE::h), Color4F(0.5f, 0.5f, 0.2f, 1.0f));
 		lineNode->addChild(line);
 	}
 	this->initChess();
