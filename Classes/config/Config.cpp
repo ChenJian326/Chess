@@ -27,13 +27,14 @@ const char * Config::GBKToUTF8(const char* strChar)
 	memset(outbuf, 0, outLength);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	char *iconvChar = (char*)malloc(strLength);
+	memset(outbuf, 0, outLength);
 	memcpy(iconvChar, strChar, strLength);
 	if (-1 == iconv(iconvH, &iconvChar, &strLength, &outbuf, &outLength))
 	{
 		iconv_close(iconvH);
 		return NULL;
 	}
-	free(iconvChar);
+	//free(iconvChar);//传言会自己free如果在这里会free会报错 ARGUMENT IS INVALID HEAP ADDRESS IN dlfree
 #else
 	if (-1 == iconv(iconvH, &strChar, &strLength, &outbuf, &outLength))
 	{
